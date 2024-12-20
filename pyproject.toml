@@ -1,0 +1,95 @@
+# Specify the build system.
+[build-system]
+requires = [
+	"sip==6.9.1",
+	"PyQt-builder==1.17.0",
+	"PyQt6==6.7.1",
+	"PyQt6-sip==13.9.1",
+]
+build-backend = "sipbuild.api"
+
+# Specify the PEP 566 metadata for the project.
+[project]
+name = "PyQt6Ads"
+version = "4.3.1.0"
+description = "Python bindings for Qt Advanced Docking System"
+license = { text = "LGPL v2.1" }
+readme = "README.md"
+dependencies = ["PyQt6>=6.7.1"]
+
+[dependency-groups]
+dev = [
+	"sip==6.9.1",
+	"PyQt-builder==1.17.0",
+	"PyQt6==6.7.1",
+	"PyQt6-sip==13.9.1",
+	"pytest",
+	"pytest-qt",
+	"ipython",
+	"pdbpp; sys_platform != 'win32'",
+	"rich",
+	"pre-commit",
+	"ruff",
+]
+
+[project.urls]
+Upstream = "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/"
+Homepage = "https://github.com/tlambert03/PyQt6Ads"
+
+[tool.sip.bindings.ads]
+pep484-pyi = true
+define-macros = ["ADS_SHARED_EXPORT"]
+sip-file = "ads.sip"
+include-dirs = ["Qt-Advanced-Docking-System/src"]
+qmake-QT = ["widgets", "gui-private; platform_system == 'Linux'"]
+headers = [
+	"Qt-Advanced-Docking-System/src/AutoHideDockContainer.h",
+	"Qt-Advanced-Docking-System/src/AutoHideSideBar.h",
+	"Qt-Advanced-Docking-System/src/AutoHideTab.h",
+	"Qt-Advanced-Docking-System/src/DockAreaTabBar.h",
+	"Qt-Advanced-Docking-System/src/DockAreaTitleBar.h",
+	"Qt-Advanced-Docking-System/src/DockAreaTitleBar_p.h",
+	"Qt-Advanced-Docking-System/src/DockAreaWidget.h",
+	"Qt-Advanced-Docking-System/src/DockComponentsFactory.h",
+	"Qt-Advanced-Docking-System/src/DockContainerWidget.h",
+	"Qt-Advanced-Docking-System/src/DockFocusController.h",
+	"Qt-Advanced-Docking-System/src/DockManager.h",
+	"Qt-Advanced-Docking-System/src/DockOverlay.h",
+	"Qt-Advanced-Docking-System/src/DockSplitter.h",
+	"Qt-Advanced-Docking-System/src/DockWidget.h",
+	"Qt-Advanced-Docking-System/src/DockWidgetTab.h",
+	"Qt-Advanced-Docking-System/src/DockingStateReader.h",
+	"Qt-Advanced-Docking-System/src/ElidingLabel.h",
+	"Qt-Advanced-Docking-System/src/FloatingDockContainer.h",
+	"Qt-Advanced-Docking-System/src/FloatingDragPreview.h",
+	"Qt-Advanced-Docking-System/src/IconProvider.h",
+	"Qt-Advanced-Docking-System/src/PushButton.h",
+	"Qt-Advanced-Docking-System/src/ResizeHandle.h",
+	"Qt-Advanced-Docking-System/src/ads_globals.h",
+	"Qt-Advanced-Docking-System/src/linux/FloatingWidgetTitleBar.h; platform_system == 'Linux'",
+]
+sources = [
+	"Qt-Advanced-Docking-System/src/AutoHideTab.cpp",
+	"Qt-Advanced-Docking-System/src/AutoHideDockContainer.cpp",
+	"Qt-Advanced-Docking-System/src/AutoHideSideBar.cpp",
+	"Qt-Advanced-Docking-System/src/DockAreaTabBar.cpp",
+	"Qt-Advanced-Docking-System/src/DockAreaTitleBar.cpp",
+	"Qt-Advanced-Docking-System/src/DockAreaWidget.cpp",
+	"Qt-Advanced-Docking-System/src/DockComponentsFactory.cpp",
+	"Qt-Advanced-Docking-System/src/DockContainerWidget.cpp",
+	"Qt-Advanced-Docking-System/src/DockFocusController.cpp",
+	"Qt-Advanced-Docking-System/src/DockManager.cpp",
+	"Qt-Advanced-Docking-System/src/DockOverlay.cpp",
+	"Qt-Advanced-Docking-System/src/DockSplitter.cpp",
+	"Qt-Advanced-Docking-System/src/DockWidget.cpp",
+	"Qt-Advanced-Docking-System/src/DockWidgetTab.cpp",
+	"Qt-Advanced-Docking-System/src/DockingStateReader.cpp",
+	"Qt-Advanced-Docking-System/src/ElidingLabel.cpp",
+	"Qt-Advanced-Docking-System/src/FloatingDockContainer.cpp",
+	"Qt-Advanced-Docking-System/src/FloatingDragPreview.cpp",
+	"Qt-Advanced-Docking-System/src/IconProvider.cpp",
+	"Qt-Advanced-Docking-System/src/PushButton.cpp",
+	"Qt-Advanced-Docking-System/src/ResizeHandle.cpp",
+	"Qt-Advanced-Docking-System/src/ads_globals.cpp",
+	"Qt-Advanced-Docking-System/src/linux/FloatingWidgetTitleBar.cpp; platform_system == 'Linux'",
+]
