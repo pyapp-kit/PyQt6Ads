@@ -17,7 +17,7 @@ license = { text = "LGPL v2.1" }
 readme = "README.md"
 dependencies = ["PyQt6>=6.7.1"]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
 	"sip==6.9.1",
 	"PyQt-builder==1.17.0",
