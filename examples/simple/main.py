@@ -25,7 +25,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         # widget
         l = QLabel()
         l.setWordWrap(True)
-        l.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
 
         # Create a dock widget with the title Label 1 and set the created label
@@ -38,7 +38,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         self.menuView.addAction(dock_widget.toggleViewAction())
 
         # Add the dock widget to the top dock widget area
-        self.dock_manager.addDockWidget(QtAds.TopDockWidgetArea, dock_widget)
+        self.dock_manager.addDockWidget(QtAds.DockWidgetArea.TopDockWidgetArea, dock_widget)
 
 
 if __name__ == "__main__":

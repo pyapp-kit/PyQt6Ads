@@ -149,7 +149,7 @@ class PerspectivesManager(QObject):
         return os.path.join(self.__perspectives_folder, name)
 
     def getSettingsObject(self, file_path: str) -> QSettings:
-        return QSettings(file_path, QSettings.IniFormat)
+        return QSettings(file_path, QSettings.Format.IniFormat)
 
     def loadPerspectives(self) -> None:
         if self.__perspectives_folder:

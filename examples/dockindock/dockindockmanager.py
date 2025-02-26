@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QAction, QMenu, QInputDialog, QLineEdit
+from PyQt6.QtWidgets import QMenu, QInputDialog, QLineEdit
 from PyQt6.QtCore import QSettings
+from PyQt6.QtGui import QAction
 
 import PyQt6Ads as QtAds
 
@@ -226,7 +227,7 @@ class MoveDockWidgetAction(QAction):
         if widget and move_to:
             widget.dockManager().removeDockWidget(widget)
             move_to.addDockWidget(
-                QtAds.CenterDockWidgetArea, widget, move_to.getInsertDefaultPos()
+                QtAds.DockWidgetArea.CenterDockWidgetArea, widget, move_to.getInsertDefaultPos()
             )
         else:
             assert False

@@ -65,7 +65,7 @@ class DockInDockWidget(QWidget):
         dock_widget.setIcon(icon)
 
         # Add the dock widget to the top dock widget area
-        return self.__mgr.addDockWidget(QtAds.CenterDockWidgetArea, dock_widget, after)
+        return self.__mgr.addDockWidget(QtAds.DockWidgetArea.CenterDockWidgetArea, dock_widget, after)
 
     def isTopLevel(self) -> bool:
         return not self.objectName()
@@ -99,7 +99,7 @@ class DockInDockWidget(QWidget):
         dock_widget.setIcon(icon)
 
         insert_pos = self.__mgr.addDockWidget(
-            QtAds.CenterDockWidgetArea, dock_widget, insert_pos
+            QtAds.DockWidgetArea.CenterDockWidgetArea, dock_widget, insert_pos
         )
 
         return child, insert_pos

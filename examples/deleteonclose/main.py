@@ -56,7 +56,7 @@ if __name__ == "__main__":
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
         dw.setFeature(QtAds.CDockWidget.DockWidgetDeleteOnClose, True)
-        area = dock_manager.addDockWidgetTab(QtAds.CenterDockWidgetArea, dw)
+        area = dock_manager.addDockWidgetTab(QtAds.DockWidgetArea.CenterDockWidgetArea, dw)
         qDebug("doc dock widget created! {} {}".format(dw, area))
 
     action.triggered.connect(on_action_triggered)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         i += 1
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
-        area = dock_manager.addDockWidgetTab(QtAds.CenterDockWidgetArea, dw)
+        area = dock_manager.addDockWidgetTab(QtAds.DockWidgetArea.CenterDockWidgetArea, dw)
         qDebug("dock widget created! {} {}".format(dw, area))
 
     action.triggered.connect(on_action2_triggered)

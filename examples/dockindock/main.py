@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         for i in range(3):
             l = QLabel()
             l.setWordWrap(True)
-            l.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+            l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
             l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
 
             previous_dock_widget = self.dock_manager.addTabWidget(
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
                 # Create example content label - this can be any application specific widget
                 l = QLabel()
                 l.setWordWrap(True)
-                l.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+                l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
                 l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
 
                 previous_dock_widget = group_manager.addTabWidget(
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
                 # Create example content label - this can be any application specific widget
                 l = QLabel()
                 l.setWordWrap(True)
-                l.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+                l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
                 l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
 
                 previous_dock_widget = sub_group.addTabWidget(
