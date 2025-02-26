@@ -4,6 +4,13 @@ import site
 import sys
 
 from pyqtbuild import PyQtBindings, PyQtProject
+import os
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+os.environ["PATH"] = os.pathsep.join(
+    [os.environ["PATH"], str(HERE / "Qt" / "6.8.2" / "macos" / "bin")]
+)
 
 
 class PyQt6Ads(PyQtProject):

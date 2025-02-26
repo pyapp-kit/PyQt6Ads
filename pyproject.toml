@@ -3,7 +3,7 @@
 requires = [
 	"sip==6.9.1",
 	"PyQt-builder==1.17.0",
-	"PyQt6==6.7.1",
+	"PyQt6-Qt6==6.8.2",
 	"PyQt6-sip==13.9.1",
 ]
 build-backend = "sipbuild.api"
@@ -92,4 +92,24 @@ sources = [
 	"Qt-Advanced-Docking-System/src/ResizeHandle.cpp",
 	"Qt-Advanced-Docking-System/src/ads_globals.cpp",
 	"Qt-Advanced-Docking-System/src/linux/FloatingWidgetTitleBar.cpp; platform_system == 'Linux'",
+]
+
+
+[tool.cibuildwheel]
+build-verbosity = 1
+skip = ["*-manylinux_i686", "*-musllinux*", "*-win32", "pp*"]
+build = ["cp312-*"]
+build-frontend = "build[uv]"
+
+[tool.cibuildwheel.linux]
+before-build = [
+	"yum install -y mesa-libGL libxslt llvm clang clang-devel",
+	"uv pip install aqtinstall auditwheel",
+	"python -m aqt install-qt linux desktop ${QT_VERSION} --outputdir ${QT_DIR} --base http://mirrors.ocf.berkeley.edu/qt/",
+]
+
+[tool.cibuildwheel.macos]
+before-build = [
+	"uv pip install aqtinstall",
+	'if [ -z "${QT_DIR}" ]; then python -m aqt install-qt mac desktop ${QT_VERSION} --outputdir ${QT_DIR} --base http://mirrors.ocf.berkeley.edu/qt/; fi',
 ]
