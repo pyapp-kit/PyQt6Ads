@@ -1,192 +1,54 @@
-on: [push, pull_request]
+name: Build Wheels
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
+  pull_request:
 
 jobs:
-  build_src:
-    name: Build sdist
-    runs-on: ubuntu-latest
-    outputs:
-      qt_version: ${{ steps.query.outputs.qt_version }}
+  build:
+    name: Build Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      QT_VERSION: 6.8.2
+      QT_INSTALL_DIR: Qt
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
+
     steps:
-      - name: Checkout
+      - name: Set environment variables for host OS
+        shell: bash
+        run: |
+          # aqt host os, must be one of "linux", "mac", "windows"
+          case "${{ runner.os }}" in
+            Linux) echo "QT_HOST_OS=linux" >> $GITHUB_ENV ;;
+            macOS) echo "QT_HOST_OS=mac" >> $GITHUB_ENV ;;
+            Windows) echo "QT_HOST_OS=windows" >> $GITHUB_ENV ;;
+          esac
+
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: "recursive"
           fetch-depth: 0
-      - name: Build sdist
-        run: |
-          python -m pip install build
-          python -m build --sdist
-      - name: Upload artifact
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install Deps
+        run: uv pip install aqtinstall
+
+      - name: Install Qt
+        run: uvx aqt install-qt "$QT_HOST_OS" desktop "$QT_VERSION" --outputdir "$QT_INSTALL_DIR"
+
+      - name: Build wheels via cibuildwheel
+        uses: pypa/cibuildwheel@v2.22
+
+      - name: Upload wheels artifactss
         uses: actions/upload-artifact@v4
         with:
-          name: sdist
-          path: dist/*.tar.gz
-
-  build_wheels:
-    needs: build_src
-    name: Build wheel ${{ matrix.wheel }} for PyQt6 on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-2022
-            qt_version: ${{ needs.build_src.outputs.qt_version }}
-            wheel: cp39-win_amd64
-            arch: x86_64
-          - os: ubuntu-latest
-            qt_version: ${{ needs.build_src.outputs.qt_version }}
-            wheel: cp39-manylinux_x86_64
-            arch: x86_64
-          - os: macos-13
-            qt_version: ${{ needs.build_src.outputs.qt_version }}
-            wheel: cp39-macosx_x86_64
-            arch: x86_64
-          - os: macos-13
-            qt_version: ${{ needs.build_src.outputs.qt_version }}
-            wheel: cp39-macosx_arm64
-            arch: arm64
-    steps:
-      - name: Setup Python
-        if: runner.os == 'Windows'
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-      - name: Download sdist
-        uses: actions/download-artifact@v4
-        with:
-          name: source
-      - name: Unpack sdist
-        shell: bash
-        run: tar --strip-components 1 -xvf *.tar.gz
-      - name: Setup Qt vars
-        shell: bash
-        run: |
-          # Derive a three-part Qt version from the provided qt_version
-          QT_VERSION=$(echo ${{ matrix.qt_version }} | cut -d. -f-3)
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            QT_BASE_DIR=${GITHUB_WORKSPACE}\\Qt
-            QT_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
-            QT_DIR=$QT_BASE_DIR/$QT_VERSION/macos
-          elif [[ "$RUNNER_OS" == "Linux" ]]; then
-            QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
-            QT_DIR=$QT_BASE_DIR/$QT_VERSION/gcc_64
-          else
-            echo "Unsupported runner OS $RUNNER_OS"
-            exit 1
-          fi
-
-          echo "QT_VERSION=$QT_VERSION" >> $GITHUB_ENV
-          echo "QT_BASE_DIR=$QT_BASE_DIR" >> $GITHUB_ENV
-          echo "QT_DIR=$QT_DIR" >> $GITHUB_ENV
-      - uses: ilammy/msvc-dev-cmd@v1
-        if: runner.os == 'Windows'
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.22.0
-        with:
-          output-dir: wheelhouse
-        env:
-          CIBW_ENVIRONMENT_LINUX: >
-            CMAKE_PREFIX_PATH=${{ env.QT_DIR }}/lib/cmake
-            LD_LIBRARY_PATH=${{ env.QT_DIR }}/lib
-            VERBOSE=1
-          CIBW_ENVIRONMENT_MACOS: >
-            MACOSX_DEPLOYMENT_TARGET=11.0
-            CMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
-            CMAKE_PREFIX_PATH=${QT_DIR}/lib/cmake
-            VERBOSE=1
-          CIBW_ENVIRONMENT_WINDOWS: >
-            CMAKE_PREFIX_PATH="${QT_DIR}\\lib\\cmake"
-            VERBOSE=1
-          CIBW_BEFORE_BUILD_LINUX: >
-            yum install -y mesa-libGL libxslt llvm clang clang-devel
-            && python3 -m pip install --user aqtinstall auditwheel
-            && python3 -m aqt install-qt linux desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
-            && python3 ./scripts/set-qt-constraint.py ${{ matrix.qt_version }}
-          CIBW_BEFORE_BUILD_MACOS: >
-            python3 -m pip install aqtinstall
-            && python3 -m aqt install-qt mac desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
-            && python3 ./scripts/set-qt-constraint.py ${{ matrix.qt_version }}
-          CIBW_BEFORE_BUILD_WINDOWS: >
-            python3 -m pip install aqtinstall
-            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
-            && python3 ./scripts/set-qt-constraint.py ${{ matrix.qt_version }}
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
-          CIBW_ARCHS_MACOS: x86_64 arm64
-          CIBW_BUILD_VERBOSITY: 3
-          CIBW_BUILD: ${{ matrix.wheel }}
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
-            python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_28_x86_64 {wheel}
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS:
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS:
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel-${{ matrix.wheel }}
+          name: cibw-wheels-${{ runner.os }}-${{ runner.arch }}
           path: ./wheelhouse/*.whl
-
-  build_aarch64_wheel:
-    name: Build wheel ${{ matrix.wheel }} for PyQt6 on ${{ matrix.os }}
-    needs: build_src
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-24.04-arm
-            qt_version: ${{ needs.build_src.outputs.qt_version }}
-            wheel: cp39-manylinux_aarch64
-            arch: aarch64
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Download sdist
-        uses: actions/download-artifact@v4
-        with:
-          name: source
-      - name: Unpack sdist
-        shell: bash
-        run: tar --strip-components 1 -xvf *.tar.gz
-      - name: Setup Qt vars
-        shell: bash
-        run: |
-          QT_VERSION=$(echo ${{ matrix.qt_version }} | cut -d. -f-3)
-          echo "QT_VERSION=$QT_VERSION" >> $GITHUB_ENV
-      - name: Build
-        run: |
-          cat >build.sh <<EOF
-          set -e
-          . /env/bin/activate
-          pip install aqtinstall PyQt6 sipbuild auditwheel
-          aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
-          LD_LIBRARY_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib \
-          CMAKE_PREFIX_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake \
-          python -m build --verbose --wheel .
-          mv dist dist-orig
-          mkdir dist
-          LD_LIBRARY_PATH=/work/env/lib/python3.12/site-packages/PyQt6/ \
-          python ./scripts/custom-auditwheel.py repair -w dist --only-plat --plat manylinux_2_38_aarch64 ./dist-orig/*whl
-          EOF
-          docker run --platform=linux/aarch64 --rm -v $PWD:/work -w /work quay.io/pypa/manylinux_2_38_aarch64 bash ./build.sh
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel-${{ matrix.wheel }}
-          path: ./dist/*.whl
-
-  upload_pypi:
-    needs: [build_wheels, build_aarch64_wheel, build_src]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: source
-          path: dist
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: wheel-*
-          path: dist
-          merge-multiple: true
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
