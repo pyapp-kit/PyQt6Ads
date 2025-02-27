@@ -27,15 +27,8 @@ dev = [
 	"aqtinstall>=3.2.0",
 ]
 
-[tool.sip]
-project-factory = "pyqtbuild:PyQtProject"
-
 [tool.sip.builder]
-qmake = "Qt/6.5.3/macos/bin/qmake"
 jobs = 16
-qmake-settings = [
-	"RESOURCES += /Users/talley/dev/self/PyQt6Ads/Qt-Advanced-Docking-System/src/ads.qrc",
-]
 
 [tool.sip.bindings.PyQt6Ads]
 pep484-pyi = true
