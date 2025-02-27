@@ -1,43 +1,36 @@
+# Specify the build system.
+[build-system]
+requires = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
+build-backend = "sipbuild.api"
 
 # Specify the PEP 566 metadata for the project.
 [project]
 name = "PyQt6Ads"
 version = "4.3.1.0"
+requires-python = ">=3.10"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
 readme = "README.md"
-dependencies = ["PyQt6>=6.7.1"]
-
-[project.optional-dependencies]
-dev = [
-	"sip==6.9.1",
-	"PyQt-builder==1.17.0",
-	"PyQt6==6.7.1",
-	"PyQt6-sip==13.9.1",
-	"pytest",
-	"pytest-qt",
-	"ipython",
-	"pdbpp; sys_platform != 'win32'",
-	"rich",
-	"pre-commit",
-	"ruff",
-]
+dependencies = ["PyQt6>=6.5.3,!=6.6"]
 
 [project.urls]
 Upstream = "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/"
 Homepage = "https://github.com/tlambert03/PyQt6Ads"
 
-# Specify the build system.
-[build-system]
-requires = ["sip >=6,<7", "PyQt-builder >=1.17<2", "PyQt6"]
-build-backend = "sipbuild.api"
-
+[dependency-groups]
+build = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
+dev = [
+	{ "include-group" = "build" },
+	"pre-commit>=4.1.0",
+	"pytest>=8.3.4",
+	"ruff>=0.9.8",
+]
 
 [tool.sip]
 project-factory = "pyqtbuild:PyQtProject"
 
 [tool.sip.builder]
-qmake = "Qt/6.8.2/macos/bin/qmake"
+qmake = "Qt/6.5.3/macos/bin/qmake"
 jobs = 16
 qmake-settings = [
 	"RESOURCES += /Users/talley/dev/self/PyQt6Ads/Qt-Advanced-Docking-System/src/ads.qrc",
@@ -111,15 +104,44 @@ skip = ["*-manylinux_i686", "*-musllinux*", "*-win32", "pp*"]
 build = ["cp312-*"]
 build-frontend = "build[uv]"
 
-[tool.cibuildwheel.linux]
-before-build = [
-	"yum install -y mesa-libGL libxslt llvm clang clang-devel",
-	"uv pip install aqtinstall auditwheel",
-	"python -m aqt install-qt linux desktop ${QT_VERSION} --outputdir ${QT_DIR} --base http://mirrors.ocf.berkeley.edu/qt/",
+
+# https://docs.astral.sh/ruff/
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+pydocstyle = { convention = "numpy" }
+select = [
+	"E",    # style errors
+	"F",    # flakes
+	"W",    # warnings
+	"D",    # pydocstyle
+	"D417", # Missing argument descriptions in Docstrings
+	"I",    # isort
+	"UP",   # pyupgrade
+	"S",    # bandit
+	"C4",   # flake8-comprehensions
+	"B",    # flake8-bugbear
+	"A001", # flake8-builtins
+	"TC",   # flake8-typecheck
+	"TID",  # flake8-tidy-imports
+	"RUF",  # ruff-specific rules
+]
+ignore = [
+	"D401", # First line should be in imperative mood
 ]
 
-[tool.cibuildwheel.macos]
-before-build = [
-	"uv pip install aqtinstall",
-	'if [ -z "${QT_DIR}" ]; then python -m aqt install-qt mac desktop ${QT_VERSION} --outputdir ${QT_DIR} --base http://mirrors.ocf.berkeley.edu/qt/; fi',
-]
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["D", "S", "RUF012"]
+"benchmarks/*.py" = ["D", "RUF012"]
+
+# https://docs.astral.sh/ruff/formatter/
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.uv]
+# Packages are built and installed into the virtual environment in editable mode 
+# but sipbuild.api does not support editable installs.
+package = false

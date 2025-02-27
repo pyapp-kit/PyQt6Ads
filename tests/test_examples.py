@@ -19,11 +19,8 @@ app = QApplication.instance() or QApplication([])
 )
 def test_example(main: Path) -> None:
     with patch("PyQt6.QtWidgets.QApplication"):
-        try:
-            runpy.run_path(str(main), run_name="__main__")
-            for widget in QApplication.topLevelWidgets():
-                widget.close()
-                widget.deleteLater()
-            QApplication.processEvents()
-        except ImportError as e:
-            pytest.skip(str(e))
+        runpy.run_path(str(main), run_name="__main__")
+        for widget in QApplication.topLevelWidgets():
+            widget.close()
+            widget.deleteLater()
+        QApplication.processEvents()

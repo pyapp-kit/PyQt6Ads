@@ -3,3 +3,6 @@ dist
 __pycache__/
 Qt/
 .vscode/settings.json
+persist/perspectives.ini
+aqtinstall.log
+wheelhouse/
