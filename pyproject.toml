@@ -1,12 +1,3 @@
-# Specify the build system.
-[build-system]
-requires = [
-	"sip==6.9.1",
-	"PyQt-builder==1.17.0",
-	"PyQt6-Qt6==6.8.2",
-	"PyQt6-sip==13.9.1",
-]
-build-backend = "sipbuild.api"
 
 # Specify the PEP 566 metadata for the project.
 [project]
@@ -36,12 +27,31 @@ dev = [
 Upstream = "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/"
 Homepage = "https://github.com/tlambert03/PyQt6Ads"
 
-[tool.sip.bindings.ads]
+# Specify the build system.
+[build-system]
+requires = ["sip >=6,<7", "PyQt-builder >=1.17<2", "PyQt6"]
+build-backend = "sipbuild.api"
+
+
+[tool.sip]
+project-factory = "pyqtbuild:PyQtProject"
+
+[tool.sip.builder]
+qmake = "Qt/6.8.2/macos/bin/qmake"
+jobs = 16
+qmake-settings = [
+	"RESOURCES += /Users/talley/dev/self/PyQt6Ads/Qt-Advanced-Docking-System/src/ads.qrc",
+]
+
+[tool.sip.bindings.PyQt6Ads]
 pep484-pyi = true
-define-macros = ["ADS_SHARED_EXPORT"]
-sip-file = "ads.sip"
-include-dirs = ["Qt-Advanced-Docking-System/src"]
+sip-file = "PyQt6Ads.sip"
 qmake-QT = ["widgets", "gui-private; platform_system == 'Linux'"]
+define-macros = ["ADS_SHARED_EXPORT"]
+include-dirs = [
+	"Qt-Advanced-Docking-System/src",
+	"Qt-Advanced-Docking-System/src/linux; platform_system == 'Linux'",
+]
 headers = [
 	"Qt-Advanced-Docking-System/src/AutoHideDockContainer.h",
 	"Qt-Advanced-Docking-System/src/AutoHideSideBar.h",

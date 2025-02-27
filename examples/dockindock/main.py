@@ -1,9 +1,12 @@
+from pathlib import Path
 import sys
 import atexit
+
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt6.QtCore import Qt
 
+sys.path.append(str(Path(__file__).parent))
 from perspectives import PerspectivesManager
 from dockindock import DockInDockWidget
 
@@ -68,7 +71,6 @@ class MainWindow(QMainWindow):
                 )
 
         self.perspectives_manager.loadPerspectives()
-
         atexit.register(self.cleanup)
 
     def cleanup(self):
