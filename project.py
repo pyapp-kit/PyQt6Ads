@@ -5,36 +5,12 @@ import subprocess
 from pyqtbuild import PyQtBindings, PyQtProject
 
 ROOT = Path(__file__).parent
-ADS_DIR = ROOT / "Qt-Advanced-Docking-System"
-
-
-# Doesn't work inside cibuildwheel...
-def get_ads_version():
-    """Get the version from the Qt-Advanced-Docking-System git tags"""
-    # Run git describe in the submodule directory
-    try:
-        result = subprocess.run(
-            ["git", "describe", "--tags"],
-            cwd=str(ADS_DIR),
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        raise RuntimeError(
-            "Failed to get version from Qt-Advanced-Docking-System git tags"
-        )
 
 
 class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
         self.bindings_factories = [PyQt6Adsmod]
-
-    # def setup(self, pyproject, tool, tool_description):
-    #     super().setup(pyproject, tool, tool_description)
-    #     self.version_str = get_ads_version()
 
     def apply_user_defaults(self, tool):
         if tool == "sdist":
@@ -59,6 +35,8 @@ class PyQt6Adsmod(PyQtBindings):
         super().__init__(project, "PyQt6Ads")
 
     def apply_user_defaults(self, tool):
-        resource_file = str(ADS_DIR / "src" / "ads.qrc")
+        resource_file = os.path.join(
+            self.project.root_dir, "Qt-Advanced-Docking-System", "src", "ads.qrc"
+        )
         self.builder_settings.append("RESOURCES += " + resource_file)
         super().apply_user_defaults(tool)
