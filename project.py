@@ -5,7 +5,6 @@ from pyqtbuild import PyQtBindings, PyQtProject
 
 ROOT = Path(__file__).parent
 
-
 class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
@@ -15,7 +14,14 @@ class PyQt6Ads(PyQtProject):
         qmake_path = "bin/qmake"
         if os.name == "nt":
             qmake_path += ".exe"
-        qmake_bin = str(next(ROOT.rglob(qmake_path)).absolute())
+        try:
+            qmake_bin = str(next(ROOT.rglob(qmake_path)).absolute())
+        except StopIteration:
+            raise RuntimeError(
+                "qmake not found.\n"
+                "Please run `uvx --from aqtinstall aqt install-qt <plat> "
+                "desktop <qtversion> <arch> --outputdir Qt`"
+            )
         self.builder.qmake = qmake_bin
         return super().apply_user_defaults(tool)
 

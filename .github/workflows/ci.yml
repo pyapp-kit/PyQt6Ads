@@ -19,6 +19,15 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Set environment variables for host OS
         shell: bash
         run: |
@@ -36,15 +45,6 @@ jobs:
               echo "QT_ARCH=win64_msvc2019_64" >> $GITHUB_ENV
               ;;
           esac
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: "recursive"
-          fetch-depth: 0
-
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5
 
       - name: Install Qt
         shell: bash
