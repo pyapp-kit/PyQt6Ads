@@ -11,6 +11,8 @@ class PyQt6Ads(PyQtProject):
         self.bindings_factories = [PyQt6Adsmod]
 
     def apply_user_defaults(self, tool):
+        if tool == "sdist":
+            return super().apply_user_defaults(tool)
         qmake_path = "bin/qmake"
         if os.name == "nt":
             qmake_path += ".exe"
