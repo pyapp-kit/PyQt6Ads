@@ -19,10 +19,11 @@ Homepage = "https://github.com/tlambert03/PyQt6Ads"
 
 [dependency-groups]
 build = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
+test = ["pytest>=8.3.4"]
 dev = [
 	{ "include-group" = "build" },
+	{ "include-group" = "test" },
 	"pre-commit>=4.1.0",
-	"pytest>=8.3.4",
 	"ruff>=0.9.8",
 	"aqtinstall>=3.2.0",
 ]
@@ -99,6 +100,7 @@ build = ["cp39-*"]
 manylinux-x86_64-image = "manylinux_2_28"
 build-frontend = "build[uv]"
 test-command = "pytest {project}/tests -v"
+test-groups = ["test"]
 # test-skip = ["*-musllinux*", "cp312-win*", "*-macosx_arm64"]
 
 [tool.cibuildwheel.macos]
