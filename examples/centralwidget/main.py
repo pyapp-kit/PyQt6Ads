@@ -3,14 +3,13 @@ import sys
 
 from PyQt6 import uic
 from PyQt6.QtCore import QSignalBlocker
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtGui import QCloseEvent, QAction
 from PyQt6.QtWidgets import (
     QApplication,
     QTableWidget,
     QPlainTextEdit,
     QWidgetAction,
     QComboBox,
-    QAction,
     QSizePolicy,
     QInputDialog,
 )
@@ -27,11 +26,15 @@ class MainWindow(MainWindowUI, MainWindowBase):
 
         self.setupUi(self)
 
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.OpaqueSplitterResize, True)
         QtAds.CDockManager.setConfigFlag(
-            QtAds.CDockManager.XmlCompressionEnabled, False
+            QtAds.CDockManager.eConfigFlag.OpaqueSplitterResize, True
         )
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.XmlCompressionEnabled, False
+        )
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.FocusHighlighting, True
+        )
         self.dock_manager = QtAds.CDockManager(self)
 
         # Set central widget
@@ -51,7 +54,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         table_dock_widget = QtAds.CDockWidget("Table 1")
         table_dock_widget.setWidget(table)
         table_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         table_dock_widget.resize(250, 150)
         table_dock_widget.setMinimumSize(200, 150)
@@ -66,7 +69,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         table_dock_widget = QtAds.CDockWidget("Table 2")
         table_dock_widget.setWidget(table)
         table_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         table_dock_widget.resize(250, 150)
         table_dock_widget.setMinimumSize(200, 150)
@@ -81,7 +84,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         properties_dock_widget = QtAds.CDockWidget("Properties")
         properties_dock_widget.setWidget(properties_table)
         properties_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         properties_dock_widget.resize(250, 150)
         properties_dock_widget.setMinimumSize(200, 150)
@@ -99,11 +102,13 @@ class MainWindow(MainWindowUI, MainWindowBase):
         save_perspective_action.triggered.connect(self.save_perspective)
         perspective_list_action = QWidgetAction(self)
         self.perspective_combobox = QComboBox(self)
-        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-        self.perspective_combobox.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Preferred
+        self.perspective_combobox.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToContents
         )
-        self.perspective_combobox.activated[str].connect(
+        self.perspective_combobox.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.perspective_combobox.currentTextChanged.connect(
             self.dock_manager.openPerspective
         )
         perspective_list_action.setDefaultWidget(self.perspective_combobox)

@@ -1,40 +1,42 @@
 import os
 from pathlib import Path
-import site
-import sys
+import subprocess
 
 from pyqtbuild import PyQtBindings, PyQtProject
+
+ROOT = Path(__file__).parent
 
 
 class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
-        self.bindings_factories = [ads]
-
-
-class ads(PyQtBindings):
-    def __init__(self, project):
-        super().__init__(project, "ads")
+        self.bindings_factories = [PyQt6Adsmod]
 
     def apply_user_defaults(self, tool):
-        """Set default values for user options that haven't been set yet."""
-        root = Path(self.project.root_dir)
-        resource_file = str(root / "Qt-Advanced-Docking-System" / "src" / "ads.qrc")
-
-        # Add environment variable settings for isolated build
-        site_pkg = Path(site.getsitepackages()[0])
-        qt_lib_dir = str(site_pkg / "PyQt6" / "Qt6" / "lib")
-
-        if sys.platform == "darwin":
-            os.environ["DYLD_LIBRARY_PATH"] = (
-                qt_lib_dir + os.pathsep + os.environ.get("DYLD_LIBRARY_PATH", "")
+        if tool == "sdist":
+            return super().apply_user_defaults(tool)
+        qmake_path = "bin/qmake"
+        if os.name == "nt":
+            qmake_path += ".exe"
+        try:
+            qmake_bin = str(next(ROOT.rglob(qmake_path)).absolute())
+        except StopIteration:
+            raise RuntimeError(
+                "qmake not found.\n"
+                "Please run `uvx --from aqtinstall aqt install-qt <plat> "
+                "desktop <qtversion> <arch> --outputdir Qt`"
             )
-            os.environ["LDFLAGS"] = f"-L{qt_lib_dir} " + os.environ.get("LDFLAGS", "")
+        self.builder.qmake = qmake_bin
+        return super().apply_user_defaults(tool)
 
-        elif sys.platform == "win32":
-            os.environ["PATH"] = qt_lib_dir + os.pathsep + os.environ.get("PATH", "")
-            os.environ["LIB"] = qt_lib_dir + os.pathsep + os.environ.get("LIB", "")
 
-        print("Adding resource file to qmake project: ", resource_file)
+class PyQt6Adsmod(PyQtBindings):
+    def __init__(self, project):
+        super().__init__(project, "PyQt6Ads")
+
+    def apply_user_defaults(self, tool):
+        resource_file = os.path.join(
+            self.project.root_dir, "Qt-Advanced-Docking-System", "src", "ads.qrc"
+        )
         self.builder_settings.append("RESOURCES += " + resource_file)
         super().apply_user_defaults(tool)

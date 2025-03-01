@@ -2,15 +2,21 @@ import os
 import sys
 
 from PyQt6 import uic
-from PyQt6.QtCore import QSignalBlocker
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtCore import QSignalBlocker, Qt
+from PyQt6.QtGui import (
+    QCloseEvent,
+    QAction,
+    QDragEnterEvent,
+    QDragLeaveEvent,
+    QDropEvent,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QPlainTextEdit,
     QWidgetAction,
     QComboBox,
-    QAction,
     QSizePolicy,
+    QPushButton,
     QInputDialog,
 )
 
@@ -20,20 +26,44 @@ UI_FILE = os.path.join(os.path.dirname(__file__), "mainwindow.ui")
 MainWindowUI, MainWindowBase = uic.loadUiType(UI_FILE)
 
 
+class DroppableItem(QPushButton):
+    def __init__(self, text: str):
+        super().__init__(text)
+        self.setAcceptDrops(True)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasText():
+            event.acceptProposedAction()
+            self.setCursor(Qt.CursorShape.DragMoveCursor)
+
+    def dragLeaveEvent(self, event: QDragLeaveEvent):
+        self.unsetCursor()
+
+    def dropEvent(self, event: QDropEvent):
+        if event.mimeData().hasText():
+            event.acceptProposedAction()
+            self.setText(event.mimeData().text())
+
+
 class MainWindow(MainWindowUI, MainWindowBase):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.setupUi(self)
 
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.OpaqueSplitterResize, True)
         QtAds.CDockManager.setConfigFlag(
-            QtAds.CDockManager.XmlCompressionEnabled, False
+            QtAds.CDockManager.eConfigFlag.OpaqueSplitterResize, True
         )
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
-        QtAds.CDockManager.setAutoHideConfigFlag(
-            QtAds.CDockManager.AutoHideOpenOnDragHover, True
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.XmlCompressionEnabled, False
         )
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.FocusHighlighting, True
+        )
+        # QtAds.CDockManager.setAutoHideConfigFlag(
+        #     QtAds.CDockManager.eAutoHideFlag.AutoHideOpenOnDragHover, True
+        # )
         self.dock_manager = QtAds.CDockManager(self)
 
         # Set central widget
@@ -50,7 +80,7 @@ class MainWindow(MainWindowUI, MainWindowBase):
         drop_dock_widget = QtAds.CDockWidget("Tab")
         drop_dock_widget.setWidget(droppable_item)
         drop_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         drop_dock_widget.setMinimumSize(200, 150)
         drop_dock_widget.setAcceptDrops(True)
@@ -67,11 +97,11 @@ class MainWindow(MainWindowUI, MainWindowBase):
         save_perspective_action.triggered.connect(self.save_perspective)
         perspective_list_action = QWidgetAction(self)
         self.perspective_combobox = QComboBox(self)
-        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.perspective_combobox.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Preferred
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
-        self.perspective_combobox.activated[str].connect(
+        self.perspective_combobox.currentTextChanged.connect(
             self.dock_manager.openPerspective
         )
         perspective_list_action.setDefaultWidget(self.perspective_combobox)

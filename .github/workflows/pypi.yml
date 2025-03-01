@@ -1,0 +1,102 @@
+name: Publish to PyPI
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
+  pull_request:
+
+jobs:
+  build-sdist:
+    name: 🐍 sdist and universal wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+      - uses: hynek/build-and-inspect-python-package@v2
+        with:
+          skip-wheel: true
+
+  build-wheels:
+    name: wheels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    env:
+      QT_VERSION: "6.5.3"
+      QT_INSTALL_DIR: Qt
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: fix ubuntu-latest
+        os: [windows-latest, macos-13, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: "14.29"
+
+      - name: Install Qt
+        shell: bash
+        run: |
+          case "${{ runner.os }}" in
+            Linux)
+              export QT_HOST_OS=linux
+              export QT_ARCH=gcc_64
+              ;;
+            macOS)
+              export QT_HOST_OS=mac
+              export QT_ARCH=clang_64
+              ;;
+            Windows)
+              export QT_HOST_OS=windows
+              export QT_ARCH=win64_msvc2019_64
+              ;;
+          esac
+
+          uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop \
+            "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR" \
+            --base http://mirrors.ocf.berkeley.edu/qt/
+
+      - name: Build wheels via cibuildwheel
+        uses: pypa/cibuildwheel@v2.22
+        env:
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Upload wheels artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ runner.os }}-${{ runner.arch }}
+          path: ./wheelhouse/*.whl
+
+  publish:
+    name: Publish to PyPI
+    needs: [build-sdist, build-wheels]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Get sdist
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - name: Get wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels-*
+          path: dist
+          merge-multiple: true
+
+      - name: 🚢 Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: "./dist/*"

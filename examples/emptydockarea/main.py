@@ -3,12 +3,12 @@ import os
 
 from PyQt6 import uic
 from PyQt6.QtCore import Qt, QSignalBlocker
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
     QComboBox,
     QTableWidget,
-    QAction,
     QWidgetAction,
     QSizePolicy,
     QInputDialog,
@@ -27,11 +27,15 @@ class CMainWindow(MainWindowUI, MainWindowBase):
 
         self.setupUi(self)
 
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.OpaqueSplitterResize, True)
         QtAds.CDockManager.setConfigFlag(
-            QtAds.CDockManager.XmlCompressionEnabled, False
+            QtAds.CDockManager.eConfigFlag.OpaqueSplitterResize, True
         )
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.XmlCompressionEnabled, False
+        )
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.FocusHighlighting, True
+        )
         self.dock_manager = QtAds.CDockManager(self)
 
         # Set central widget
@@ -39,10 +43,10 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         label.setText(
             "This is a DockArea which is always visible, even if it does not contain any DockWidgets."
         )
-        label.setAlignment(Qt.AlignCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         central_dock_widget = QtAds.CDockWidget("CentralWidget")
         central_dock_widget.setWidget(label)
-        central_dock_widget.setFeature(QtAds.CDockWidget.NoTab, True)
+        central_dock_widget.setFeature(QtAds.CDockWidget.DockWidgetFeature.NoTab, True)
         central_dock_area = self.dock_manager.setCentralWidget(central_dock_widget)
 
         # create other dock widgets
@@ -52,7 +56,7 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         table_dock_widget = QtAds.CDockWidget("Table 1")
         table_dock_widget.setWidget(table)
         table_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         table_dock_widget.resize(250, 150)
         table_dock_widget.setMinimumSize(200, 150)
@@ -68,7 +72,7 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         table_dock_widget = QtAds.CDockWidget("Table 2")
         table_dock_widget.setWidget(table)
         table_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         table_dock_widget.resize(250, 150)
         table_dock_widget.setMinimumSize(200, 150)
@@ -83,7 +87,7 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         properties_dock_widget = QtAds.CDockWidget("Properties")
         properties_dock_widget.setWidget(properties_table)
         properties_dock_widget.setMinimumSizeHintMode(
-            QtAds.CDockWidget.MinimumSizeHintFromDockWidget
+            QtAds.CDockWidget.eMinimumSizeHintMode.MinimumSizeHintFromDockWidget
         )
         properties_dock_widget.resize(250, 150)
         properties_dock_widget.setMinimumSize(200, 150)
@@ -101,11 +105,13 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         save_perspective_action.triggered.connect(self.savePerspective)
         perspective_list_action = QWidgetAction(self)
         self.perspective_combo_box = QComboBox(self)
-        self.perspective_combo_box.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-        self.perspective_combo_box.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Preferred
+        self.perspective_combo_box.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToContents
         )
-        self.perspective_combo_box.activated[str].connect(
+        self.perspective_combo_box.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.perspective_combo_box.currentTextChanged.connect(
             self.dock_manager.openPerspective
         )
         perspective_list_action.setDefaultWidget(self.perspective_combo_box)

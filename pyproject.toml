@@ -1,47 +1,46 @@
 # Specify the build system.
 [build-system]
-requires = [
-	"sip==6.9.1",
-	"PyQt-builder==1.17.0",
-	"PyQt6==6.7.1",
-	"PyQt6-sip==13.9.1",
-]
+requires = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
 build-backend = "sipbuild.api"
 
 # Specify the PEP 566 metadata for the project.
 [project]
 name = "PyQt6Ads"
-version = "4.3.1.0"
+# TODO: make dynamic in project.py
+version = "4.3.1"  
+requires-python = ">=3.9"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
 readme = "README.md"
-dependencies = ["PyQt6>=6.7.1"]
-
-[project.optional-dependencies]
-dev = [
-	"sip==6.9.1",
-	"PyQt-builder==1.17.0",
-	"PyQt6==6.7.1",
-	"PyQt6-sip==13.9.1",
-	"pytest",
-	"pytest-qt",
-	"ipython",
-	"pdbpp; sys_platform != 'win32'",
-	"rich",
-	"pre-commit",
-	"ruff",
-]
+dependencies = ["PyQt6>=6.5.3,!=6.6"]
 
 [project.urls]
 Upstream = "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/"
 Homepage = "https://github.com/tlambert03/PyQt6Ads"
 
-[tool.sip.bindings.ads]
+[dependency-groups]
+build = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
+test = ["pytest>=8.3.4"]
+dev = [
+	{ "include-group" = "build" },
+	{ "include-group" = "test" },
+	"pre-commit>=4.1.0",
+	"ruff>=0.9.8",
+	"aqtinstall>=3.2.0",
+]
+
+[tool.sip.builder]
+jobs = 8
+
+[tool.sip.bindings.PyQt6Ads]
 pep484-pyi = true
-define-macros = ["ADS_SHARED_EXPORT"]
-sip-file = "ads.sip"
-include-dirs = ["Qt-Advanced-Docking-System/src"]
+sip-file = "PyQt6Ads.sip"
 qmake-QT = ["widgets", "gui-private; platform_system == 'Linux'"]
+define-macros = ["ADS_SHARED_EXPORT"]
+include-dirs = [
+	"Qt-Advanced-Docking-System/src",
+	"Qt-Advanced-Docking-System/src/linux; platform_system == 'Linux'",
+]
 headers = [
 	"Qt-Advanced-Docking-System/src/AutoHideDockContainer.h",
 	"Qt-Advanced-Docking-System/src/AutoHideSideBar.h",
@@ -93,3 +92,54 @@ sources = [
 	"Qt-Advanced-Docking-System/src/ads_globals.cpp",
 	"Qt-Advanced-Docking-System/src/linux/FloatingWidgetTitleBar.cpp; platform_system == 'Linux'",
 ]
+
+
+[tool.cibuildwheel]
+build-verbosity = 1
+skip = ["*-manylinux_i686", "*-musllinux*", "*-win32", "pp*"]
+build = ["cp39-*"]
+manylinux-x86_64-image = "manylinux_2_28"
+build-frontend = "build[uv]"
+test-command = "pytest {project}/tests -v"
+test-groups = ["test"]
+
+
+[tool.cibuildwheel.macos]
+repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
+
+# https://docs.astral.sh/ruff/
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+pydocstyle = { convention = "numpy" }
+select = [
+	"E",    # style errors
+	"F",    # flakes
+	"W",    # warnings
+	"I",    # isort
+	"UP",   # pyupgrade
+	"S",    # bandit
+	"C4",   # flake8-comprehensions
+	"B",    # flake8-bugbear
+	"A001", # flake8-builtins
+	"TC",   # flake8-typecheck
+	"TID",  # flake8-tidy-imports
+	"RUF",  # ruff-specific rules
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["D", "S", "RUF012"]
+"benchmarks/*.py" = ["D", "RUF012"]
+
+# https://docs.astral.sh/ruff/formatter/
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.uv]
+# Packages are built and installed into the virtual environment in editable mode 
+# but sipbuild.api does not support editable installs.
+package = false

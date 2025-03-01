@@ -1,9 +1,9 @@
 import sys
 
 import PyQt6Ads as QtAds
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtGui import QCloseEvent, QAction
 from PyQt6.QtCore import qDebug
-from PyQt6.QtWidgets import QMainWindow, QAction, QTextEdit, QApplication
+from PyQt6.QtWidgets import QMainWindow, QTextEdit, QApplication
 
 
 class MainWindow(QMainWindow):
@@ -22,8 +22,8 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = MainWindow()
 
-    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
-    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.AllTabsHaveCloseButton, True)
+    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.FocusHighlighting, True)
+    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.AllTabsHaveCloseButton, True)
     dock_manager = QtAds.CDockManager(w)
     w.setDockManager(dock_manager)
 
@@ -56,7 +56,9 @@ if __name__ == "__main__":
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
         dw.setFeature(QtAds.CDockWidget.DockWidgetDeleteOnClose, True)
-        area = dock_manager.addDockWidgetTab(QtAds.DockWidgetArea.CenterDockWidgetArea, dw)
+        area = dock_manager.addDockWidgetTab(
+            QtAds.DockWidgetArea.CenterDockWidgetArea, dw
+        )
         qDebug("doc dock widget created! {} {}".format(dw, area))
 
     action.triggered.connect(on_action_triggered)
@@ -70,7 +72,9 @@ if __name__ == "__main__":
         i += 1
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
-        area = dock_manager.addDockWidgetTab(QtAds.DockWidgetArea.CenterDockWidgetArea, dw)
+        area = dock_manager.addDockWidgetTab(
+            QtAds.DockWidgetArea.CenterDockWidgetArea, dw
+        )
         qDebug("dock widget created! {} {}".format(dw, area))
 
     action.triggered.connect(on_action2_triggered)
