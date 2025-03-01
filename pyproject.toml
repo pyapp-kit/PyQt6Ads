@@ -29,7 +29,7 @@ dev = [
 ]
 
 [tool.sip.builder]
-jobs = 16
+jobs = 8
 
 [tool.sip.bindings.PyQt6Ads]
 pep484-pyi = true

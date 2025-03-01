@@ -49,6 +49,8 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           toolset: "14.29"
+      
+      - uses: tlambert03/setup-qt-libs@main
 
       - name: Install Qt
         shell: bash
