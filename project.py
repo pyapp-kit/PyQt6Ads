@@ -8,6 +8,7 @@ ROOT = Path(__file__).parent
 ADS_DIR = ROOT / "Qt-Advanced-Docking-System"
 
 
+# Doesn't work inside cibuildwheel...
 def get_ads_version():
     """Get the version from the Qt-Advanced-Docking-System git tags"""
     # Run git describe in the submodule directory
@@ -31,9 +32,9 @@ class PyQt6Ads(PyQtProject):
         super().__init__()
         self.bindings_factories = [PyQt6Adsmod]
 
-    def setup(self, pyproject, tool, tool_description):
-        super().setup(pyproject, tool, tool_description)
-        self.version_str = get_ads_version()
+    # def setup(self, pyproject, tool, tool_description):
+    #     super().setup(pyproject, tool, tool_description)
+    #     self.version_str = get_ads_version()
 
     def apply_user_defaults(self, tool):
         if tool == "sdist":
