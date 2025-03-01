@@ -40,26 +40,26 @@ jobs:
           toolset: "14.29"
 
       - name: Install Qt
-        # linux sets up qt inside the container
-        if: runner.os != 'Linux'
         shell: bash
         run: |
           case "${{ runner.os }}" in
             Linux)
-              echo "QT_HOST_OS=linux" >> $GITHUB_ENV
-              echo "QT_ARCH=gcc_64" >> $GITHUB_ENV
+              export QT_HOST_OS=linux
+              export QT_ARCH=gcc_64
               ;;
             macOS)
-              echo "QT_HOST_OS=mac" >> $GITHUB_ENV
-              echo "QT_ARCH=clang_64" >> $GITHUB_ENV
+              export QT_HOST_OS=mac
+              export QT_ARCH=clang_64
               ;;
             Windows)
-              echo "QT_HOST_OS=windows" >> $GITHUB_ENV
-              echo "QT_ARCH=win64_msvc2019_64" >> $GITHUB_ENV
+              export QT_HOST_OS=windows
+              export QT_ARCH=win64_msvc2019_64
               ;;
           esac
 
-          uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR"
+          uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop \
+            "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR" \
+            --base http://mirrors.ocf.berkeley.edu/qt/
 
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
