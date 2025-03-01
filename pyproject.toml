@@ -103,6 +103,11 @@ test-command = "pytest {project}/tests -v"
 test-groups = ["test"]
 # test-skip = ["*-musllinux*", "cp312-win*", "*-macosx_arm64"]
 
+[tool.cibuildwheel.linux]
+before-all = """
+    yum install -y qt6-qtbase-devel qt6-qttools-devel
+"""
+
 [tool.cibuildwheel.macos]
 repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
 

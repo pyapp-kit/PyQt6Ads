@@ -7,7 +7,6 @@ on:
   pull_request:
 
 jobs:
-
   build-sdist:
     name: 🐍 sdist and universal wheel
     runs-on: ubuntu-latest
@@ -39,9 +38,10 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           toolset: "14.29"
-      - uses: tlambert03/setup-qt-libs@main
 
-      - name: Set environment variables for host OS
+      - name: Install Qt
+        # linux sets up qt inside the container
+        if: runner.os != 'Linux'
         shell: bash
         run: |
           case "${{ runner.os }}" in
@@ -58,9 +58,8 @@ jobs:
               echo "QT_ARCH=win64_msvc2019_64" >> $GITHUB_ENV
               ;;
           esac
-      - name: Install Qt
-        shell: bash
-        run: uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR"
+
+          uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR"
 
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
