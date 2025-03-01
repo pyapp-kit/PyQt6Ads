@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Build Sdist and Wheels
 
 on:
   push:
