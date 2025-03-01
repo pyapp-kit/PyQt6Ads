@@ -6,7 +6,7 @@ build-backend = "sipbuild.api"
 # Specify the PEP 566 metadata for the project.
 [project]
 name = "PyQt6Ads"
-version = "4.3.1.0"
+version = "0.0.0"  # dynamically overriden in project.py ... but using dynamic=["version"] doesn't work
 requires-python = ">=3.9"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
