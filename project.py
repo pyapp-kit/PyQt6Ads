@@ -4,19 +4,14 @@ import subprocess
 
 from pyqtbuild import PyQtBindings, PyQtProject
 
-ROOT = Path(__file__).parent
-
 
 class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
         self.bindings_factories = [PyQt6Adsmod]
+        self.verbose = bool(os.getenv("CI"))
 
     def apply_user_defaults(self, tool):
-        print("ROOT:", ROOT)
-        print("self.root_dir:", self.root_dir)
-        for f in Path(self.root_dir).rglob("*"):
-            print(f.absolute())
         if tool == "sdist":
             return super().apply_user_defaults(tool)
         qmake_path = "bin/qmake"
@@ -27,9 +22,9 @@ class PyQt6Ads(PyQtProject):
         except StopIteration:
             raise RuntimeError(
                 "qmake not found.\n"
-                "Please run `uvx --from aqtinstall aqt install-qt <plat> "
-                "desktop <qtversion> <arch> --outputdir Qt`"
+                "Please run `uvx --from aqtinstall aqt install-qt ...`"
             )
+        print(f"USING QMAKE: {qmake_bin}")
         self.builder.qmake = qmake_bin
         return super().apply_user_defaults(tool)
 
