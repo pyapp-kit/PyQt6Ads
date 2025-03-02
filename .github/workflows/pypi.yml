@@ -39,7 +39,7 @@ jobs:
         with:
           toolset: 14.29
 
-      - name: Install Qt
+      - name: Setup Environment
         shell: bash
         run: |
           case "${{ runner.os }}" in

@@ -42,9 +42,6 @@ dev = [
 	"aqtinstall>=3.2.0",
 ]
 
-[tool.sip.builder]
-jobs = 8
-
 [tool.sip.bindings.PyQt6Ads]
 pep484-pyi = true
 sip-file = "PyQt6Ads.sip"
