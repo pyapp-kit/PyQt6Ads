@@ -14,7 +14,11 @@ public:
     virtual CAutoHideTab* createDockWidgetSideTab(CDockWidget* DockWidget /Transfer/) const;
 	virtual CDockAreaTabBar* createDockAreaTabBar(CDockAreaWidget* DockArea /Transfer/ ) const;
 	virtual CDockAreaTitleBar* createDockAreaTitleBar(CDockAreaWidget* DockArea /Transfer/ ) const;
-	static const CDockComponentsFactory* factory();
+
+    static CDockComponentsFactory* factory();
+    %MethodCode
+        sipRes = ::ads::CDockComponentsFactory::factory().data();
+    %End
 	static void setFactory(CDockComponentsFactory* Factory /KeepReference/);
 	static void resetDefaultFactory();
     
