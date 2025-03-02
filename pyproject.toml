@@ -124,22 +124,22 @@ test-groups = ["test"]
 environment-pass = ["QT_VERSION"]
 before-build = [
 	"yum install -y libxkbcommon-devel",
-	"uvx --from aqtinstall aqt install-qt linux desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/",
+	'uvx --from aqtinstall aqt install-qt linux desktop "$QT_VERSION" --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"',
 ]
 repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
 test-command = [
 	"yum install -y libxkbcommon-x11 xcb-util-cursor xcb-util-wm xcb-util-keysyms xorg-x11-server-Xvfb",
 	"Xvfb :99 -screen 0 1024x768x24 &",
 	"export DISPLAY=:99",
-	"pytest {project}/tests -v"
+	"pytest {project}/tests -v",
 ]
 
 [tool.cibuildwheel.macos]
-before-build = "uvx --from aqtinstall aqt install-qt mac desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"
+before-build = 'uvx --from aqtinstall aqt install-qt mac desktop "$QT_VERSION" --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/'
 repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
 
 [tool.cibuildwheel.windows]
-before-build = "uvx --from aqtinstall aqt install-qt windows desktop $QT_VERSION win64_msvc2019_64 --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"
+before-build = 'uvx --from aqtinstall aqt install-qt windows desktop "$QT_VERSION" win64_msvc2019_64 --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/'
 
 
 # https://docs.astral.sh/ruff/
