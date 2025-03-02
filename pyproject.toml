@@ -109,8 +109,7 @@ sources = [
 
 [tool.cibuildwheel]
 build-verbosity = 1
-skip = ["*-manylinux_i686", "*-musllinux*", "*-win32", "pp*"]
-build = ["cp39-*"]
+build = ["cp39-win_amd64", "cp39-manylinux_x86_64", "cp39-macosx_x86_64", "cp39-macosx_arm64"]
 manylinux-x86_64-image = "manylinux_2_28"
 build-frontend = "build[uv]"
 test-command = "pytest {project}/tests -v"
