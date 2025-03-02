@@ -36,6 +36,8 @@ jobs:
           fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.29
 
       - name: Install Qt
         shell: bash
@@ -51,7 +53,7 @@ jobs:
               ;;
             Windows)
               QT_HOST_OS=windows
-              QT_ARCH=msvc2022_64
+              QT_ARCH=win64_msvc2019_64
               ;;
           esac
 
@@ -67,13 +69,9 @@ jobs:
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
         env:
-          CIBW_BUILD_VERBOSITY: 3
+          CIBW_BUILD_VERBOSITY: 1
           CIBW_BEFORE_BUILD: >
-            uvx --from aqtinstall aqt install-qt ${{ env.QT_HOST_OS}} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
-          CIBW_BEFORE_BUILD_LINUX: >
-            rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-            && yum install -y mesa-libGL libxslt llvm clang clang-devel
-            && uvx --from aqtinstall aqt install-qt ${{ env.QT_HOST_OS}} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
+            uvx --from aqtinstall aqt install-qt ${{ env.QT_HOST_OS}} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/
           # CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
             # python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_28_x86_64 {wheel}
       - name: Upload wheels artifacts

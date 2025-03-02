@@ -13,17 +13,18 @@ class PyQt6Ads(PyQtProject):
         self.bindings_factories = [PyQt6Adsmod]
 
     def apply_user_defaults(self, tool):
+        print("ROOT:", ROOT)
+        print("self.root_dir:", self.root_dir)
+        for f in Path(self.root_dir).rglob("*"):
+            print(f.absolute())
         if tool == "sdist":
             return super().apply_user_defaults(tool)
         qmake_path = "bin/qmake"
         if os.name == "nt":
             qmake_path += ".exe"
         try:
-            qmake_bin = str(next(ROOT.rglob(qmake_path)).absolute())
+            qmake_bin = str(next(Path(self.root_dir).rglob(qmake_path)).absolute())
         except StopIteration:
-            print("ROOT:", ROOT)
-            for f in ROOT.rglob("*"):
-                print(f)
             raise RuntimeError(
                 "qmake not found.\n"
                 "Please run `uvx --from aqtinstall aqt install-qt <plat> "
