@@ -7,16 +7,29 @@ build-backend = "sipbuild.api"
 [project]
 name = "PyQt6Ads"
 # TODO: make dynamic in project.py
-version = "4.3.1"  
+version = "4.4.0"  
 requires-python = ">=3.9"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
 readme = "README.md"
 dependencies = ["PyQt6>=6.5.3,!=6.6"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
+	"Operating System :: MacOS",
+	"Operating System :: Microsoft :: Windows",
+	"Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Topic :: Software Development :: Widget Sets",
+	"Environment :: X11 Applications :: Qt",
+	"Typing :: Typed",
+]
 
 [project.urls]
 Upstream = "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/"
-Homepage = "https://github.com/tlambert03/PyQt6Ads"
+Homepage = "https://github.com/pyapp-kit/PyQt6Ads"
 
 [dependency-groups]
 build = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
