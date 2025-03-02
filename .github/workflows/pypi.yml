@@ -51,7 +51,7 @@ jobs:
               ;;
             Windows)
               QT_HOST_OS=windows
-              QT_ARCH=win64_msvc2022_64
+              QT_ARCH=msvc2022_64
               ;;
           esac
 
@@ -64,29 +64,10 @@ jobs:
           echo "QT6_DIR=$QT6_DIR" >> $GITHUB_ENV
 
 
-          # uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop \
-          #   "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR" \
-          #   --base http://mirrors.ocf.berkeley.edu/qt/
-
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
         env:
           CIBW_BUILD_VERBOSITY: 3
-          # CIBW_ENVIRONMENT_LINUX: >
-          #   CMAKE_PREFIX_PATH=${{ env.QT6_DIR }}/lib/cmake
-          #   LD_LIBRARY_PATH=${{ env.QT6_DIR }}/lib
-          #   PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
-          #   VERBOSE=1
-          # CIBW_ENVIRONMENT_MACOS: >
-          #   MACOSX_DEPLOYMENT_TARGET=11.0
-          #   CMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
-          #   CMAKE_PREFIX_PATH=${QT6_DIR}/lib/cmake
-          #   PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
-          #   VERBOSE=1
-          # CIBW_ENVIRONMENT_WINDOWS: >
-          #   CMAKE_PREFIX_PATH="${QT6_DIR}\\lib\\cmake"
-          #   PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
-          #   VERBOSE=1
           CIBW_BEFORE_BUILD: >
             uvx --from aqtinstall aqt install-qt ${{ env.QT_HOST_OS}} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
           CIBW_BEFORE_BUILD_LINUX: >

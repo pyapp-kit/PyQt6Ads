@@ -21,6 +21,9 @@ class PyQt6Ads(PyQtProject):
         try:
             qmake_bin = str(next(ROOT.rglob(qmake_path)).absolute())
         except StopIteration:
+            print("ROOT:", ROOT)
+            for f in ROOT.rglob("*"):
+                print(f)
             raise RuntimeError(
                 "qmake not found.\n"
                 "Please run `uvx --from aqtinstall aqt install-qt <plat> "
