@@ -1,9 +1,9 @@
 import sys
 
 import PyQt6Ads as QtAds
-from PyQt6.QtGui import QCloseEvent, QAction
 from PyQt6.QtCore import qDebug
-from PyQt6.QtWidgets import QMainWindow, QTextEdit, QApplication
+from PyQt6.QtGui import QAction, QCloseEvent
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTextEdit
 
 
 class MainWindow(QMainWindow):
@@ -22,8 +22,12 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = MainWindow()
 
-    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.FocusHighlighting, True)
-    QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.AllTabsHaveCloseButton, True)
+    QtAds.CDockManager.setConfigFlag(
+        QtAds.CDockManager.eConfigFlag.FocusHighlighting, True
+    )
+    QtAds.CDockManager.setConfigFlag(
+        QtAds.CDockManager.eConfigFlag.AllTabsHaveCloseButton, True
+    )
     dock_manager = QtAds.CDockManager(w)
     w.setDockManager(dock_manager)
 
@@ -31,14 +35,12 @@ if __name__ == "__main__":
 
     def on_focused_dock_widget_changed(old: QtAds.CDockWidget, now: QtAds.CDockWidget):
         global count
-        qDebug(
-            "{:d} CDockManager::focusedDockWidgetChanged old: {} now: {} visible: {}".format(
-                count,
-                old.objectName() if old else "-",
-                now.objectName(),
-                now.isVisible(),
-            )
+        old_name = old.objectName() if old else "-"
+        msg = (
+            f"{count:d} CDockManager::focusedDockWidgetChanged old: {old_name} now: "
+            f"{now.objectName()} visible: {now.isVisible()}"
         )
+        qDebug(msg)
         count += 1
         now.widget().setFocus()
 
@@ -51,7 +53,7 @@ if __name__ == "__main__":
 
     def on_action_triggered():
         global i
-        dw = QtAds.CDockWidget("test doc {:d}".format(i))
+        dw = QtAds.CDockWidget(f"test doc {i:d}")
         i += 1
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
@@ -59,7 +61,7 @@ if __name__ == "__main__":
         area = dock_manager.addDockWidgetTab(
             QtAds.DockWidgetArea.CenterDockWidgetArea, dw
         )
-        qDebug("doc dock widget created! {} {}".format(dw, area))
+        qDebug(f"doc dock widget created! {dw} {area}")
 
     action.triggered.connect(on_action_triggered)
 
@@ -68,14 +70,14 @@ if __name__ == "__main__":
 
     def on_action2_triggered():
         global i
-        dw = QtAds.CDockWidget("test {:d}".format(i))
+        dw = QtAds.CDockWidget(f"test {i:d}")
         i += 1
         editor = QTextEdit("lorem ipsum...", dw)
         dw.setWidget(editor)
         area = dock_manager.addDockWidgetTab(
             QtAds.DockWidgetArea.CenterDockWidgetArea, dw
         )
-        qDebug("dock widget created! {} {}".format(dw, area))
+        qDebug(f"dock widget created! {dw} {area}")
 
     action.triggered.connect(on_action2_triggered)
 

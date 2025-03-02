@@ -29,6 +29,12 @@ class PyQt6Ads(PyQtProject):
         self.builder.qmake = qmake_bin
         return super().apply_user_defaults(tool)
 
+    def build_wheel(self, wheel_directory):
+        # use lowercase name for wheel, for
+        # https://packaging.python.org/en/latest/specifications/binary-distribution-format/
+        self.name = self.name.lower()
+        return super().build_wheel(wheel_directory)
+
 
 class PyQt6Adsmod(PyQtBindings):
     def __init__(self, project):

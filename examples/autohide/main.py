@@ -1,20 +1,19 @@
 import os
 import sys
 
+import PyQt6Ads as QtAds
 from PyQt6 import uic
 from PyQt6.QtCore import QSignalBlocker
-from PyQt6.QtGui import QCloseEvent, QAction
+from PyQt6.QtGui import QAction, QCloseEvent
 from PyQt6.QtWidgets import (
     QApplication,
-    QTableWidget,
-    QPlainTextEdit,
-    QWidgetAction,
     QComboBox,
-    QSizePolicy,
     QInputDialog,
+    QPlainTextEdit,
+    QSizePolicy,
+    QTableWidget,
+    QWidgetAction,
 )
-
-import PyQt6Ads as QtAds
 
 UI_FILE = os.path.join(os.path.dirname(__file__), "mainwindow.ui")
 MainWindowUI, MainWindowBase = uic.loadUiType(UI_FILE)
@@ -26,11 +25,15 @@ class MainWindow(MainWindowUI, MainWindowBase):
 
         self.setupUi(self)
 
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.OpaqueSplitterResize, True)
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.OpaqueSplitterResize, True
+        )
         QtAds.CDockManager.setConfigFlag(
             QtAds.CDockManager.eConfigFlag.XmlCompressionEnabled, False
         )
-        QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.eConfigFlag.FocusHighlighting, True)
+        QtAds.CDockManager.setConfigFlag(
+            QtAds.CDockManager.eConfigFlag.FocusHighlighting, True
+        )
         self.dock_manager = QtAds.CDockManager(self)
 
         # Set central widget
@@ -98,7 +101,9 @@ class MainWindow(MainWindowUI, MainWindowBase):
         save_perspective_action.triggered.connect(self.save_perspective)
         perspective_list_action = QWidgetAction(self)
         self.perspective_combobox = QComboBox(self)
-        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.perspective_combobox.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToContents
+        )
         self.perspective_combobox.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )

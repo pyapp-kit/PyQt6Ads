@@ -1,13 +1,17 @@
-import os
-import tempfile
-import shutil
 import atexit
+import os
+import shutil
+import sys
+import tempfile
+from pathlib import Path
+from typing import ClassVar
 
-from PyQt6.QtCore import pyqtSignal, QSettings, QObject
 import PyQt6Ads as QtAds
+from PyQt6.QtCore import QObject, QSettings, pyqtSignal
 
-from dockindockmanager import DockInDockManager
+sys.path.append(str(Path(__file__).resolve().parent))
 from dockindock import DockInDockWidget
+from dockindockmanager import DockInDockManager, MoveDockWidgetAction
 
 GROUP_PREFIX = "Group"
 
@@ -26,7 +30,7 @@ class PerspectiveInfo:
     # we will guarantee that!
 
     settings = QSettings()
-    groups: "dict[str, list[str]]" = {}
+    groups: ClassVar[dict[str, list[str]]] = {}
 
 
 class PerspectivesManager(QObject):
@@ -70,7 +74,7 @@ class PerspectivesManager(QObject):
 
         self.perspectivesListChanged.emit()
 
-    def openPerspective(name: str, widget: DockInDockWidget) -> None:
+    def openPerspective(self, name: str, widget: DockInDockWidget) -> None:
         assert widget.getTopLevelDockWidget() == widget
 
         if self.__perspectives_folder:
@@ -112,8 +116,10 @@ class PerspectivesManager(QObject):
                                 else:
                                     widget = findWidget(widget_name, managers)
                                     if widget:
-                                        # move dock widget in the same group as it used to be when perspective was saved
-                                        # this guarantee load/open perspectives will work smartly
+                                        # move dock widget in the same group as it used
+                                        # to be when perspective was saved this
+                                        # guarantee load/open perspectives will work
+                                        # smartly
                                         MoveDockWidgetAction.move(widget, mgr)
 
                 # internally load perspectives from QSettings
@@ -129,7 +135,7 @@ class PerspectivesManager(QObject):
 
                 self.openedPerspective().emit()
         else:
-            assert False
+            raise AssertionError()
 
     def removePerspectives(self) -> None:
         self.__perspectives.clear()
@@ -140,11 +146,8 @@ class PerspectivesManager(QObject):
         self.perspectivesListChanged.emit()
 
     def getSettingsFileName(self, perspective: str, temp: bool) -> str:
-        name = (
-            "perspectives.ini"
-            if not perspective
-            else f"perspectives_{perspective + '.tmp' if temp else perspective + '.ini'}"
-        )
+        ext = perspective + ".tmp" if temp else perspective + ".ini"
+        name = "perspectives.ini" if not perspective else f"perspectives_{ext}"
 
         return os.path.join(self.__perspectives_folder, name)
 
@@ -175,7 +178,7 @@ class PerspectivesManager(QObject):
                     except FileNotFoundError:
                         pass
                     if not shutil.copy(to_load, loaded):
-                        assert False
+                        raise AssertionError()
 
                     self.__perspectives[perspective] = PerspectiveInfo()
                     self.__perspectives[perspective].settings = self.getSettingsObject(
@@ -190,7 +193,7 @@ class PerspectivesManager(QObject):
                         )
                     main_settings.endGroup()
                 else:
-                    assert False
+                    raise AssertionError()
 
             main_settings.endArray()
 
@@ -224,4 +227,4 @@ class PerspectivesManager(QObject):
                 except FileNotFoundError:
                     pass
                 if not shutil.copy(settings.fileName(), to_save):
-                    assert False
+                    raise AssertionError()

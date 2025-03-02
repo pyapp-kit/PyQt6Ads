@@ -1,26 +1,25 @@
 import os
 import sys
 
+import PyQt6Ads as QtAds
 from PyQt6 import uic
 from PyQt6.QtCore import QSignalBlocker, Qt
 from PyQt6.QtGui import (
-    QCloseEvent,
     QAction,
+    QCloseEvent,
     QDragEnterEvent,
     QDragLeaveEvent,
     QDropEvent,
 )
 from PyQt6.QtWidgets import (
     QApplication,
-    QPlainTextEdit,
-    QWidgetAction,
     QComboBox,
-    QSizePolicy,
-    QPushButton,
     QInputDialog,
+    QPlainTextEdit,
+    QPushButton,
+    QSizePolicy,
+    QWidgetAction,
 )
-
-import PyQt6Ads as QtAds
 
 UI_FILE = os.path.join(os.path.dirname(__file__), "mainwindow.ui")
 MainWindowUI, MainWindowBase = uic.loadUiType(UI_FILE)
@@ -97,7 +96,9 @@ class MainWindow(MainWindowUI, MainWindowBase):
         save_perspective_action.triggered.connect(self.save_perspective)
         perspective_list_action = QWidgetAction(self)
         self.perspective_combobox = QComboBox(self)
-        self.perspective_combobox.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.perspective_combobox.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToContents
+        )
         self.perspective_combobox.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )

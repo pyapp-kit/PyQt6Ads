@@ -1,6 +1,10 @@
-from PyQt6.QtWidgets import QMenu
-from PyQt6.QtGui import QAction
+from typing import TYPE_CHECKING
 
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu
+
+if TYPE_CHECKING:
+    from dockindock import DockInDockWidget
 
 
 class LoadPerspectiveAction(QAction):

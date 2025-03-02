@@ -1,11 +1,9 @@
-from pathlib import Path
-from pdb import run
 import runpy
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 from PyQt6.QtWidgets import QApplication
-
 
 HERE = Path(__file__)
 EXAMPLES = HERE.parent.parent / "examples"

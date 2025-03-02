@@ -1,21 +1,19 @@
-import sys
 import os
+import sys
 
+import PyQt6Ads as QtAds
 from PyQt6 import uic
-from PyQt6.QtCore import Qt, QSignalBlocker
-from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QSignalBlocker, Qt
+from PyQt6.QtGui import QAction, QCloseEvent
 from PyQt6.QtWidgets import (
     QApplication,
-    QLabel,
     QComboBox,
+    QInputDialog,
+    QLabel,
+    QSizePolicy,
     QTableWidget,
     QWidgetAction,
-    QSizePolicy,
-    QInputDialog,
 )
-from PyQt6.QtGui import QCloseEvent
-import PyQt6Ads as QtAds
-
 
 UI_FILE = os.path.join(os.path.dirname(__file__), "mainwindow.ui")
 MainWindowUI, MainWindowBase = uic.loadUiType(UI_FILE)
@@ -41,7 +39,8 @@ class CMainWindow(MainWindowUI, MainWindowBase):
         # Set central widget
         label = QLabel()
         label.setText(
-            "This is a DockArea which is always visible, even if it does not contain any DockWidgets."
+            "This is a DockArea which is always visible, even if it does not "
+            "contain any DockWidgets."
         )
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         central_dock_widget = QtAds.CDockWidget("CentralWidget")
