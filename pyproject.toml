@@ -112,6 +112,7 @@ repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
 line-length = 88
 target-version = "py39"
 src = ["src", "tests"]
+fix = true
 
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
@@ -121,19 +122,13 @@ select = [
 	"W",    # warnings
 	"I",    # isort
 	"UP",   # pyupgrade
-	"S",    # bandit
-	"C4",   # flake8-comprehensions
-	"B",    # flake8-bugbear
-	"A001", # flake8-builtins
 	"TC",   # flake8-typecheck
 	"TID",  # flake8-tidy-imports
 	"RUF",  # ruff-specific rules
 ]
-ignore = []
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*.py" = ["D", "S", "RUF012"]
-"benchmarks/*.py" = ["D", "RUF012"]
+"tests/*.py" = ["RUF012"]
 
 # https://docs.astral.sh/ruff/formatter/
 [tool.ruff.format]

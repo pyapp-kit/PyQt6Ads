@@ -1,16 +1,24 @@
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QMessageBox,
-    QInputDialog,
-    QMenu,
-    QLineEdit,
-)
-from PyQt6.QtGui import QIcon
-import PyQt6Ads as QtAds
+import sys
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-from dockindockmanager import DockInDockManager
+import PyQt6Ads as QtAds
 from perspectiveactions import LoadPerspectiveAction, RemovePerspectiveAction
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import (
+    QInputDialog,
+    QLineEdit,
+    QMenu,
+    QMessageBox,
+    QVBoxLayout,
+    QWidget,
+)
+
+sys.path.append(str(Path(__file__).resolve().parent))
+from dockindockmanager import DockInDockManager, MoveDockWidgetAction
+
+if TYPE_CHECKING:
+    from perspectives import PerspectivesManager
 
 
 class DockInDockWidget(QWidget):
@@ -65,7 +73,9 @@ class DockInDockWidget(QWidget):
         dock_widget.setIcon(icon)
 
         # Add the dock widget to the top dock widget area
-        return self.__mgr.addDockWidget(QtAds.DockWidgetArea.CenterDockWidgetArea, dock_widget, after)
+        return self.__mgr.addDockWidget(
+            QtAds.DockWidgetArea.CenterDockWidgetArea, dock_widget, after
+        )
 
     def isTopLevel(self) -> bool:
         return not self.objectName()
@@ -115,17 +125,18 @@ class DockInDockWidget(QWidget):
             assert not widget_to_remove.getManager().allDockWidgets(True, True)
 
             # find widget's parent:
-            for dock_widget in top_level_widget.getManager().allDockWidgets(True, True):
+            for dockwidget in top_level_widget.getManager().allDockWidgets(True, True):
                 if dockwidget[1].widget() == widget_to_remove:
                     dockwidget[0].removeDockWidget(dockwidget[1])
                     del dockwidget[1]
-                    # delete widgetToRemove; automatically deleted when dockWidget is deleted
+                    # delete widgetToRemove;
+                    # automatically deleted when dockWidget is deleted
                     widget_to_remove = None
                     break
 
             assert widget_to_remove is None
         else:
-            assert False
+            raise AssertionError()
 
     def attachViewMenu(self, menu: QMenu) -> None:
         menu.aboutToShow.connect(self.autoFillAttachedViewMenu)
@@ -137,7 +148,7 @@ class DockInDockWidget(QWidget):
             menu.clear()
             self.setupViewMenu(menu)
         else:
-            assert False
+            raise AssertionError()
 
     def setupViewMenu(self, menu):
         dock_managers = self.__mgr.allManagers(True, True)
@@ -146,7 +157,7 @@ class DockInDockWidget(QWidget):
         if self.getTopLevelDockWidget() == self:
             has_perspectives_menu = self.__perspectives_manager is not None
         else:
-            assert False
+            raise AssertionError()
 
         organize = menu
         if has_perspectives_menu:
@@ -178,7 +189,7 @@ class DockInDockWidget(QWidget):
             for name in perspectives_names:
                 remove.addAction(RemovePerspectiveAction(remove, name, self))
 
-    def setNewPerspectiveDefaultName(default_name: str) -> None:
+    def setNewPerspectiveDefaultName(self, default_name: str) -> None:
         self.__new_perspective_default_name = default_name
 
     def createPerspective(self) -> None:

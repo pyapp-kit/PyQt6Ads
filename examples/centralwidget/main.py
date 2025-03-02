@@ -1,20 +1,19 @@
 import os
 import sys
 
+import PyQt6Ads as QtAds
 from PyQt6 import uic
 from PyQt6.QtCore import QSignalBlocker
-from PyQt6.QtGui import QCloseEvent, QAction
+from PyQt6.QtGui import QAction, QCloseEvent
 from PyQt6.QtWidgets import (
     QApplication,
-    QTableWidget,
-    QPlainTextEdit,
-    QWidgetAction,
     QComboBox,
-    QSizePolicy,
     QInputDialog,
+    QPlainTextEdit,
+    QSizePolicy,
+    QTableWidget,
+    QWidgetAction,
 )
-
-import PyQt6Ads as QtAds
 
 UI_FILE = os.path.join(os.path.dirname(__file__), "mainwindow.ui")
 MainWindowUI, MainWindowBase = uic.loadUiType(UI_FILE)

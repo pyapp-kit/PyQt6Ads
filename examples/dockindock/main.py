@@ -1,14 +1,13 @@
-from pathlib import Path
-import sys
 import atexit
+import sys
+from pathlib import Path
 
-
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
 
 sys.path.append(str(Path(__file__).parent))
-from perspectives import PerspectivesManager
 from dockindock import DockInDockWidget
+from perspectives import PerspectivesManager
 
 
 class MainWindow(QMainWindow):
@@ -25,13 +24,13 @@ class MainWindow(QMainWindow):
 
         previous_dock_widget = None
         for i in range(3):
-            l = QLabel()
-            l.setWordWrap(True)
-            l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-            l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
+            lbl = QLabel()
+            lbl.setWordWrap(True)
+            lbl.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+            lbl.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
 
             previous_dock_widget = self.dock_manager.addTabWidget(
-                l, f"Top label {i}", previous_dock_widget
+                lbl, f"Top label {i}", previous_dock_widget
             )
 
         last_top_level_dock = previous_dock_widget
@@ -44,14 +43,17 @@ class MainWindow(QMainWindow):
             previous_dock_widget = None
 
             for i in range(3):
-                # Create example content label - this can be any application specific widget
-                l = QLabel()
-                l.setWordWrap(True)
-                l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-                l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
+                # Create example content label
+                # this can be any application specific widget
+                lbl = QLabel()
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+                lbl.setText(
+                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
+                )
 
                 previous_dock_widget = group_manager.addTabWidget(
-                    l, f"ZInner {j}/{i}", previous_dock_widget
+                    lbl, f"ZInner {j}/{i}", previous_dock_widget
                 )
 
             # create sub-group
@@ -60,14 +62,17 @@ class MainWindow(QMainWindow):
             )
             previous_dock_widget = None
             for i in range(3):
-                # Create example content label - this can be any application specific widget
-                l = QLabel()
-                l.setWordWrap(True)
-                l.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-                l.setText("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. ")
+                # Create example content label
+                # this can be any application specific widget
+                lbl = QLabel()
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+                lbl.setText(
+                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
+                )
 
                 previous_dock_widget = sub_group.addTabWidget(
-                    l, f"SubInner {j}/{i}", previous_dock_widget
+                    lbl, f"SubInner {j}/{i}", previous_dock_widget
                 )
 
         self.perspectives_manager.loadPerspectives()

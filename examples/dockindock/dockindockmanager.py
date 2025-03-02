@@ -1,10 +1,13 @@
-from PyQt6.QtWidgets import QMenu, QInputDialog, QLineEdit
-from PyQt6.QtCore import QSettings
-from PyQt6.QtGui import QAction
+from typing import TYPE_CHECKING
 
 import PyQt6Ads as QtAds
+from PyQt6.QtCore import QSettings
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu, QMessageBox
 
 CHILD_PREFIX = "Child-"
+if TYPE_CHECKING:
+    from dockindock import DockInDockWidget
 
 
 class DockInDockManager(QtAds.CDockManager):
@@ -52,7 +55,9 @@ class DockInDockManager(QtAds.CDockManager):
                 if mgr == self:
                     pass  # if dock is already in mgr, no reason to move it there
                 elif mgr == DockInDockManager.dockInAManager(value):
-                    pass  # if target is the group itself, can't move it there, would make no sense
+                    # if target is the group itself
+                    # can't move it there, would make no sense
+                    pass
                 else:
                     sub_menu.addAction(MoveDockWidgetAction(value, mgr, sub_menu))
 
@@ -81,7 +86,7 @@ class DockInDockManager(QtAds.CDockManager):
         if persist_group_name.startswith(CHILD_PREFIX):
             persist_group_name = persist_group_name[len(CHILD_PREFIX) :]
         else:
-            assert False
+            raise AssertionError()
         return persist_group_name
 
     def loadPerspectivesRec(self, settings: QSettings) -> None:
@@ -103,7 +108,7 @@ class DockInDockManager(QtAds.CDockManager):
     def removePerspectivesRec(self, settings: QSettings) -> None:
         children = self.allManagers(True, True)
 
-        for mgr in children:
+        for child in children:
             child.removePerspectives(child.perspectiveNames())
 
     @staticmethod
@@ -184,7 +189,7 @@ class CreateChildDockAction(QAction):
                         )
                     )
                 else:
-                    assert False
+                    raise AssertionError()
 
                 if not error:
                     self.__dock_in_dock.createGroup(name, None)
@@ -227,7 +232,9 @@ class MoveDockWidgetAction(QAction):
         if widget and move_to:
             widget.dockManager().removeDockWidget(widget)
             move_to.addDockWidget(
-                QtAds.DockWidgetArea.CenterDockWidgetArea, widget, move_to.getInsertDefaultPos()
+                QtAds.DockWidgetArea.CenterDockWidgetArea,
+                widget,
+                move_to.getInsertDefaultPos(),
             )
         else:
-            assert False
+            raise AssertionError()
