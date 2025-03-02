@@ -7,7 +7,7 @@ build-backend = "sipbuild.api"
 [project]
 name = "PyQt6Ads"
 # TODO: make dynamic in project.py
-version = "4.4.0"  
+version = "4.4.0"
 requires-python = ">=3.9"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
@@ -109,16 +109,38 @@ sources = [
 
 [tool.cibuildwheel]
 build-verbosity = 1
-skip = ["*-manylinux_i686", "*-musllinux*", "*-win32", "pp*"]
-build = ["cp39-*"]
+build = [
+	"cp39-win_amd64",
+	"cp39-manylinux_x86_64",
+	"cp39-macosx_x86_64",
+	"cp39-macosx_arm64",
+]
 manylinux-x86_64-image = "manylinux_2_28"
 build-frontend = "build[uv]"
 test-command = "pytest {project}/tests -v"
 test-groups = ["test"]
 
+[tool.cibuildwheel.linux]
+environment-pass = ["QT_VERSION"]
+before-build = [
+	"yum install -y libxkbcommon-devel",
+	"uvx --from aqtinstall aqt install-qt linux desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/",
+]
+repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
+test-command = [
+	"yum install -y epel-release",
+	"yum install -y libxkbcommon-x11 xcb-util-cursor xcb-util-wm xcb-util-keysyms xorg-x11-server-Xvfb",
+	"uv pip install pytest-xvfb",
+	"pytest {project}/tests -v"
+]
 
 [tool.cibuildwheel.macos]
+before-build = "uvx --from aqtinstall aqt install-qt mac desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"
 repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
+
+[tool.cibuildwheel.windows]
+before-build = "uvx --from aqtinstall aqt install-qt windows desktop %QT_VERSION% win64_msvc2019_64 --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"
+
 
 # https://docs.astral.sh/ruff/
 [tool.ruff]
@@ -130,14 +152,14 @@ fix = true
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
 select = [
-	"E",    # style errors
-	"F",    # flakes
-	"W",    # warnings
-	"I",    # isort
-	"UP",   # pyupgrade
-	"TC",   # flake8-typecheck
-	"TID",  # flake8-tidy-imports
-	"RUF",  # ruff-specific rules
+	"E",   # style errors
+	"F",   # flakes
+	"W",   # warnings
+	"I",   # isort
+	"UP",  # pyupgrade
+	"TC",  # flake8-typecheck
+	"TID", # flake8-tidy-imports
+	"RUF", # ruff-specific rules
 ]
 
 [tool.ruff.lint.per-file-ignores]

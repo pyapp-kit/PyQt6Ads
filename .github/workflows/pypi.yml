@@ -23,13 +23,11 @@ jobs:
     name: ${{ matrix.os }} wheel
     runs-on: ${{ matrix.os }}
     env:
-      QT_VERSION: "6.5.3"
-      QT_INSTALL_DIR: Qt
+      QT_VERSION: "6.5.3"  # used in cibuildwheel
     strategy:
       fail-fast: false
       matrix:
-        # TODO: fix ubuntu-latest
-        os: [windows-latest, macos-13, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,34 +36,10 @@ jobs:
       - uses: astral-sh/setup-uv@v5
       - uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: "14.29"
-
-      - name: Install Qt
-        shell: bash
-        run: |
-          case "${{ runner.os }}" in
-            Linux)
-              export QT_HOST_OS=linux
-              export QT_ARCH=gcc_64
-              ;;
-            macOS)
-              export QT_HOST_OS=mac
-              export QT_ARCH=clang_64
-              ;;
-            Windows)
-              export QT_HOST_OS=windows
-              export QT_ARCH=win64_msvc2019_64
-              ;;
-          esac
-
-          uvx --from aqtinstall aqt install-qt "$QT_HOST_OS" desktop \
-            "$QT_VERSION" "$QT_ARCH" --outputdir "$QT_INSTALL_DIR" \
-            --base http://mirrors.ocf.berkeley.edu/qt/
+          toolset: 14.29
 
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
-        env:
-          CIBW_BUILD_VERBOSITY: 1
 
       - name: Upload wheels artifacts
         uses: actions/upload-artifact@v4
