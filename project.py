@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import subprocess
 
 from pyqtbuild import PyQtBindings, PyQtProject
 
@@ -9,7 +8,7 @@ class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
         self.bindings_factories = [PyQt6Adsmod]
-        self.verbose = bool(os.getenv("CI"))
+        self.verbose = bool(os.getenv("CI") or os.getenv("CIBUILDWHEEL"))
 
     def apply_user_defaults(self, tool):
         if tool == "sdist":

@@ -23,8 +23,7 @@ jobs:
     name: ${{ matrix.os }} wheel
     runs-on: ${{ matrix.os }}
     env:
-      QT_VERSION: "6.5.3"
-      QT_INSTALL_DIR: Qt
+      QT_VERSION: "6.5.3"  # used in cibuildwheel
     strategy:
       fail-fast: false
       matrix:
@@ -39,41 +38,9 @@ jobs:
         with:
           toolset: 14.29
 
-      - name: Setup Environment
-        shell: bash
-        run: |
-          case "${{ runner.os }}" in
-            Linux)
-              QT_HOST_OS=linux
-              QT_ARCH=gcc_64
-              ;;
-            macOS)
-              QT_HOST_OS=mac
-              QT_ARCH=clang_64
-              ;;
-            Windows)
-              QT_HOST_OS=windows
-              QT_ARCH=win64_msvc2019_64
-              ;;
-          esac
-
-          QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
-          QT6_DIR=$QT_BASE_DIR/$QT_VERSION/
-          
-          echo "QT_HOST_OS=$QT_HOST_OS" >> $GITHUB_ENV
-          echo "QT_ARCH=$QT_ARCH" >> $GITHUB_ENV
-          echo "QT_BASE_DIR=$QT_BASE_DIR" >> $GITHUB_ENV
-          echo "QT6_DIR=$QT6_DIR" >> $GITHUB_ENV
-
-
       - name: Build wheels via cibuildwheel
         uses: pypa/cibuildwheel@v2.22
-        env:
-          CIBW_BUILD_VERBOSITY: 1
-          CIBW_BEFORE_BUILD: >
-            uvx --from aqtinstall aqt install-qt ${{ env.QT_HOST_OS}} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/
-          # CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
-            # python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_28_x86_64 {wheel}
+
       - name: Upload wheels artifacts
         uses: actions/upload-artifact@v4
         with:
