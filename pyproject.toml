@@ -127,6 +127,12 @@ before-build = [
 	"uvx --from aqtinstall aqt install-qt linux desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/",
 ]
 repair-wheel-command = ["python scripts/repair_wheel.py {dest_dir} {wheel}"]
+test-command = [
+	"yum install -y libxkbcommon-x11 xcb-util-cursor xcb-util-wm xcb-util-keysyms xorg-x11-server-Xvfb",
+	"Xvfb :99 -screen 0 1024x768x24 &",
+	"export DISPLAY=:99",
+	"pytest {project}/tests -v"
+]
 
 [tool.cibuildwheel.macos]
 before-build = "uvx --from aqtinstall aqt install-qt mac desktop $QT_VERSION --outputdir Qt --base http://mirrors.ocf.berkeley.edu/qt/"
