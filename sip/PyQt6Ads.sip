@@ -1,7 +1,7 @@
 %Module(name=PyQt6Ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
 %HideNamespace(name=ads)
 
-%If (WIN32)
+%If defined(_WIN32)
 %ModuleCode
     PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
     if (pyqt6_module == NULL) {
@@ -9,7 +9,6 @@
         return;
     }
     Py_DECREF(pyqt6_module);
-%End
 %End
 
 

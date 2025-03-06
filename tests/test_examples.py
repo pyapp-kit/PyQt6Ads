@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+import PyQt6Ads  # noqa
 from PyQt6.QtWidgets import QApplication
 
 HERE = Path(__file__)
