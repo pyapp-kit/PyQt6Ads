@@ -1,6 +1,18 @@
 %Module(name=PyQt6Ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
 %HideNamespace(name=ads)
 
+%If (WIN32)
+%ModuleCode
+    PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
+    if (pyqt6_module == NULL) {
+        PyErr_SetString(PyExc_ImportError, "Failed to import PyQt6");
+        return;
+    }
+    Py_DECREF(pyqt6_module);
+%End
+%End
+
+
 %Import QtCore/QtCoremod.sip
 %DefaultSupertype PyQt6.sip.simplewrapper
 
