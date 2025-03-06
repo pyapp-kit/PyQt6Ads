@@ -1,14 +1,16 @@
 %Module(name=PyQt6Ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
 %HideNamespace(name=ads)
 
-%If defined(_WIN32)
 %ModuleCode
-    PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
-    if (pyqt6_module == NULL) {
-        PyErr_SetString(PyExc_ImportError, "Failed to import PyQt6");
-        return;
-    }
-    Py_DECREF(pyqt6_module);
+#ifdef _WIN32
+// Import PyQt6 first so that os.add_dll_directory is called (for windows)
+PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
+if (pyqt6_module == NULL) {
+    PyErr_SetString(PyExc_ImportError, "Failed to import PyQt6");
+    return;
+}
+Py_DECREF(pyqt6_module);
+#endif
 %End
 
 
