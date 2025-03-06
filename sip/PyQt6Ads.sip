@@ -3,13 +3,18 @@
 
 %ModuleCode
 #ifdef _WIN32
-// Import PyQt6 first so that os.add_dll_directory is called (for windows)
-PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
-if (pyqt6_module == NULL) {
-    PyErr_SetString(PyExc_ImportError, "Failed to import PyQt6");
-    return;
-}
-Py_DECREF(pyqt6_module);
+// Run at module initialization time
+struct PyQt6Importer {
+    PyQt6Importer() {
+        PyObject* pyqt6_module = PyImport_ImportModule("PyQt6");
+        if (!pyqt6_module) {
+            PyErr_SetString(PyExc_ImportError, "Failed to import PyQt6");
+            return;
+        }
+        Py_DECREF(pyqt6_module);
+    }
+};
+static PyQt6Importer _pyqt6_importer;  // Runs at module init
 #endif
 %End
 
