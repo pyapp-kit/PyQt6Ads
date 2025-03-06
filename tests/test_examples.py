@@ -2,8 +2,8 @@ import runpy
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
 import PyQt6Ads  # noqa
+import pytest
 from PyQt6.QtWidgets import QApplication
 
 HERE = Path(__file__)
