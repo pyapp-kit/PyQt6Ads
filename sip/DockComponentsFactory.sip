@@ -15,17 +15,11 @@ public:
   virtual CDockAreaTitleBar* createDockAreaTitleBar(CDockAreaWidget* DockArea /Transfer/) const;
   static const CDockComponentsFactory* factory();
 %MethodCode
-    QSharedPointer<ads::CDockComponentsFactory> *grab;
-
-    Py_BEGIN_ALLOW_THREADS
-    // This will leak but there seems to be no way to detach the object.
-    grab = new QSharedPointer<ads::CDockComponentsFactory>(ads::CDockComponentsFactory::factory());
-    Py_END_ALLOW_THREADS
-
-    sipRes = grab->data();
+        sipRes = ::ads::CDockComponentsFactory::factory().data();
 %End
   static void setFactory(CDockComponentsFactory* Factory /KeepReference/);
   static void resetDefaultFactory();
+    
 };
 
 };
