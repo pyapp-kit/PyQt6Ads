@@ -1,4 +1,4 @@
-%Module(name=PyQt6Ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
+%Module(name=PyQt6Ads._ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
 %HideNamespace(name=ads)
 
 %Import QtCore/QtCoremod.sip

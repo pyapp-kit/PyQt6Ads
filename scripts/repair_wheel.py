@@ -37,7 +37,7 @@ def main() -> None:
 RPATH_RE_MAC = re.compile(r"^\s*path (.+) \(offset \d+\)$", re.MULTILINE)
 
 
-def fix_rpath_macos(so: Path, new_rpath: str = "@loader_path/PyQt6/Qt6/lib") -> None:
+def fix_rpath_macos(so: Path, new_rpath: str = "@loader_path/../PyQt6/Qt6/lib") -> None:
     # delete all current rpaths
     current_rpath = run(["otool", "-l", str(so)], capture_output=True, text=True)
     for rpath in RPATH_RE_MAC.findall(current_rpath.stdout):
@@ -48,7 +48,7 @@ def fix_rpath_macos(so: Path, new_rpath: str = "@loader_path/PyQt6/Qt6/lib") -> 
     print(f"Updated RPATH for {so} to {new_rpath}")
 
 
-def fix_rpath_linux(so: Path, new_rpath: str = "$ORIGIN/PyQt6/Qt6/lib") -> None:
+def fix_rpath_linux(so: Path, new_rpath: str = "$ORIGIN/../PyQt6/Qt6/lib") -> None:
     # delete all current rpaths
     current_rpath = run(
         ["patchelf", "--print-rpath", str(so)], capture_output=True, text=True
