@@ -2,9 +2,9 @@
 
 namespace ads
 {
-    %TypeHeaderCode
-    #include <linux/FloatingWidgetTitleBar.h>
-    %End
+%TypeHeaderCode
+#include <linux/FloatingWidgetTitleBar.h>
+%End
     
 class CFloatingWidgetTitleBar : QWidget
 {

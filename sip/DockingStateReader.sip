@@ -3,15 +3,13 @@ namespace ads
 
 class CDockingStateReader : QXmlStreamReader
 {
-
-    %TypeHeaderCode
-    #include <DockingStateReader.h>
-    %End
-
+%TypeHeaderCode
+#include <DockingStateReader.h>
+%End
 
 public:
-	void setFileVersion(int FileVersion);
-	int fileVersion() const;
+  void setFileVersion(int FileVersion);
+  int fileVersion() const;
 };
 
 };

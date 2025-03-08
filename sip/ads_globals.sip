@@ -36,9 +36,9 @@ PyObject *qtads_FindParent(PyObject* type, const QWidget *w)
 
 namespace ads
 {
-    %TypeHeaderCode
-    #include <ads_globals.h>
-    %End
+%TypeHeaderCode
+#include <ads_globals.h>
+%End
 
     enum DockWidgetArea
     {
@@ -58,7 +58,6 @@ namespace ads
         AllDockAreas
     };
     typedef QFlags<ads::DockWidgetArea> DockWidgetAreas;
-
 
     enum eTabIndex
     {
@@ -90,6 +89,7 @@ namespace ads
         DockAreaMenuIcon,
         DockAreaUndockIcon,
         DockAreaCloseIcon,
+        DockAreaMinimizeIcon,
         IconCount,
     };
 
@@ -155,5 +155,4 @@ namespace ads
        void repolishStyle(QWidget* w, ads::internal::eRepolishChildOptions Options = ads::internal::RepolishIgnoreChildren); 
        QRect globalGeometry(QWidget* w);
     };
-
 };

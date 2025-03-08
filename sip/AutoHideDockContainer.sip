@@ -5,10 +5,9 @@ namespace ads
 
 class CAutoHideDockContainer : QFrame
 {
-
-    %TypeHeaderCode
-    #include <AutoHideDockContainer.h>
-    %End
+%TypeHeaderCode
+#include <AutoHideDockContainer.h>
+%End
 
 protected:
 	virtual bool eventFilter(QObject* watched, QEvent* event);
@@ -19,27 +18,26 @@ protected:
 	void saveState(QXmlStreamWriter& Stream);
 
 public:
-	CAutoHideDockContainer(ads::CDockWidget* DockWidget /Transfer/, ads::SideBarLocation area,
-		ads::CDockContainerWidget* parent /TransferThis/);
+	CAutoHideDockContainer(CDockWidget* DockWidget /Transfer/, ads::SideBarLocation area, CDockContainerWidget* parent /TransferThis/);
 	virtual ~CAutoHideDockContainer();
-	ads::CAutoHideSideBar* autoHideSideBar() const;
-	ads::CAutoHideTab* autoHideTab() const;
-	ads::CDockWidget* dockWidget() const;
-    int tabIndex() const;
-	void addDockWidget(ads::CDockWidget* DockWidget /Transfer/);
-	ads::SideBarLocation sideBarLocation() const;
-	void setSideBarLocation(ads::SideBarLocation SideBarLocation);
-	ads::CDockAreaWidget* dockAreaWidget() const;
-	ads::CDockContainerWidget* dockContainer() const;
-    void moveContentsToParent();
+	CAutoHideSideBar* autoHideSideBar() const;
+	CAutoHideTab* autoHideTab() const;
+	CDockWidget* dockWidget() const;
+	int tabIndex() const;
+	void addDockWidget(CDockWidget* DockWidget /Transfer/);
+	SideBarLocation sideBarLocation() const;
+	void setSideBarLocation(SideBarLocation SideBarLocation);
+	CDockAreaWidget* dockAreaWidget() const;
+	CDockContainerWidget* dockContainer() const;
+	void moveContentsToParent();
 	void cleanupAndDelete();
 	void toggleView(bool Enable);
 	void collapseView(bool Enable);
 	void toggleCollapseState();
 	void setSize(int Size);
-    void resetToInitialDockWidgetSize();
-    Qt::Orientation orientation() const;
-    void moveToNewSideBarLocation(ads::SideBarLocation);
+	void resetToInitialDockWidgetSize();
+	Qt::Orientation orientation() const;
+	void moveToNewSideBarLocation(SideBarLocation);
 };
 
 };

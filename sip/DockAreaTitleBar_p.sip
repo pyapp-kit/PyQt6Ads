@@ -5,12 +5,12 @@ namespace ads
 
 class CSpacerWidget : QWidget
 {
-    %TypeHeaderCode
-    #include <DockAreaTitleBar_p.h>
-    %End
+%TypeHeaderCode
+#include <DockAreaTitleBar_p.h>
+%End
 
 public:
-	CSpacerWidget(QWidget* Parent /TransferThis/ = 0 );
+	CSpacerWidget(QWidget* Parent /TransferThis/ = nullptr);
 	virtual QSize sizeHint() const;
 	virtual QSize minimumSizeHint() const;
 };
