@@ -3,35 +3,34 @@
 namespace ads
 {
 
-
 class CAutoHideSideBar : QScrollArea
 {
 
-    %TypeHeaderCode
-    #include <AutoHideSideBar.h>
-    %End
+%TypeHeaderCode
+#include <AutoHideSideBar.h>
+%End
 
 protected:
 	virtual bool eventFilter(QObject *watched, QEvent *event);
 	void saveState(QXmlStreamWriter& Stream) const;
-	void insertTab(int Index, ads::CAutoHideTab* SideTab /Transfer/);
+	void insertTab(int Index, CAutoHideTab* SideTab /Transfer/);
 
 public:
-    CAutoHideSideBar(ads::CDockContainerWidget* parent /TransferThis/, SideBarLocation area);
+	CAutoHideSideBar(CDockContainerWidget* parent /TransferThis/, SideBarLocation area);
 	virtual ~CAutoHideSideBar();
-	void removeTab(ads::CAutoHideTab* SideTab) /TransferBack/;
-	ads::CAutoHideDockContainer* insertDockWidget(int Index, ads::CDockWidget* DockWidget /Transfer/);
-	void removeAutoHideWidget(ads::CAutoHideDockContainer* AutoHideWidget) /TransferBack/;
-	void addAutoHideWidget(ads::CAutoHideDockContainer* AutoHideWidget, int Index);
+	void removeTab(CAutoHideTab* SideTab) /TransferBack/;
+	CAutoHideDockContainer* insertDockWidget(int Index, CDockWidget* DockWidget /Transfer/);
+	void removeAutoHideWidget(CAutoHideDockContainer* AutoHideWidget) /TransferBack/;
+	void addAutoHideWidget(CAutoHideDockContainer* AutoHideWidget, int Index);
 	Qt::Orientation orientation() const;
-	ads::CAutoHideTab* tab(int index) const;
-    int tabAt(const QPoint& Pos) const;
-    int tabInsertIndexAt(const QPoint& Pos) const;
-    int indexOfTab(const CAutoHideTab& Tab) const;
+	CAutoHideTab* tab(int index) const;
+	int tabAt(const QPoint& Pos) const;
+	int tabInsertIndexAt(const QPoint& Pos) const;
+	int indexOfTab(const CAutoHideTab& Tab) const;
 	int count() const;
-    int visibleTabCount() const;
-    bool hasVisibleTabs() const;
-	ads::SideBarLocation sideBarLocation() const;
+	int visibleTabCount() const;
+	bool hasVisibleTabs() const;
+	SideBarLocation sideBarLocation() const;
 	virtual QSize minimumSizeHint() const;
 	virtual QSize sizeHint() const;
 	int spacing() const;
