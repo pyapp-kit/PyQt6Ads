@@ -195,14 +195,7 @@ public:
   CDockWidget* createDockWidget(const QString& title, QWidget* parent /TransferThis/ = nullptr) /Factory/;
   CDockComponentsFactory* componentsFactory() const;
 %MethodCode
-    QSharedPointer<ads::CDockComponentsFactory> *grab;
-
-    Py_BEGIN_ALLOW_THREADS
-    // This will leak but there seems to be no way to detach the object.
-    grab = new QSharedPointer<ads::CDockComponentsFactory>(sipCpp->componentsFactory());
-    Py_END_ALLOW_THREADS
-
-    sipRes = grab->data();
+    sipres = sipCpp->componentsFactory().data();
 %End
   void setComponentsFactory(CDockComponentsFactory* Factory /Transfer/);
   // void setComponentsFactory(QSharedPointer<CDockComponentsFactory>); // not necessary
