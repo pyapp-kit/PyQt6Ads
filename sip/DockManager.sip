@@ -195,7 +195,7 @@ public:
   CDockWidget* createDockWidget(const QString& title, QWidget* parent /TransferThis/ = nullptr) /Factory/;
   CDockComponentsFactory* componentsFactory() const;
 %MethodCode
-    sipres = sipCpp->componentsFactory().data();
+    sipRes = sipCpp->componentsFactory().data();
 %End
   void setComponentsFactory(CDockComponentsFactory* Factory /Transfer/);
   // void setComponentsFactory(QSharedPointer<CDockComponentsFactory>); // not necessary

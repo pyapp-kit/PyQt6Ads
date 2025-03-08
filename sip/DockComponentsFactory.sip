@@ -15,7 +15,7 @@ public:
   virtual CDockAreaTitleBar* createDockAreaTitleBar(CDockAreaWidget* DockArea /Transfer/) const;
   static const CDockComponentsFactory* factory();
 %MethodCode
-        sipRes = ::ads::CDockComponentsFactory::factory().data();
+    sipRes = ::ads::CDockComponentsFactory::factory().data();
 %End
   static void setFactory(CDockComponentsFactory* Factory /KeepReference/);
   static void resetDefaultFactory();
