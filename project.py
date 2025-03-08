@@ -1,12 +1,37 @@
 import os
 from pathlib import Path
 
-from pyqtbuild import PyQtBindings, PyQtProject
+from pyqtbuild import PyQtBindings, PyQtProject, QmakeBuilder
 
+
+class _Builder(QmakeBuilder):
+    # small hack to make a custom __init__ file
+    # not using Project.dunder_init... since that seems to affect PyQt6.__init__
+    def install_project(self, target_dir, *, wheel_tag=None):
+        super().install_project(target_dir, wheel_tag=wheel_tag)
+        package = Path(target_dir, "PyQt6Ads")
+        if os.name != "nt":
+            contents = "from ._ads import *\n"
+        else:
+            contents = """
+try:
+    import PyQt6  # force addition of Qt6/bin to dll_directories
+except ImportError:
+    raise ImportError("PyQt6 must be installed in order to use PyQt6Ads.") from None
+
+from ._ads import *
+del PyQt6
+            """
+        (package / "__init__.py").write_text(contents)
+
+        # rename _ads.pyi to __init__.pyi
+        (package / "_ads.pyi").rename(package / "__init__.pyi")
+        (package / "py.typed").touch()
 
 class PyQt6Ads(PyQtProject):
     def __init__(self):
         super().__init__()
+        self.builder_factory = _Builder
         self.bindings_factories = [PyQt6Adsmod]
         self.verbose = bool(os.getenv("CI") or os.getenv("CIBUILDWHEEL"))
 
