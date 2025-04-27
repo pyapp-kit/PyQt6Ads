@@ -1,4 +1,6 @@
 import os
+import re
+import shutil
 from pathlib import Path
 
 from pyqtbuild import PyQtBindings, PyQtProject, QmakeBuilder
@@ -25,8 +27,28 @@ del PyQt6
         (package / "__init__.py").write_text(contents)
 
         # rename _ads.pyi to __init__.pyi
-        (package / "_ads.pyi").rename(package / "__init__.pyi")
+        stubs = package / "_ads.pyi"
+        stubs = stubs.rename(package / "__init__.pyi")
+
+        # fix some errors in the stubs
+        stubs_src = stubs.read_text()
+        # replace erroneous [...*] syntax
+        stubs_src = stubs_src.replace("*]", "]")
+        stubs_src = stubs_src.replace(" Any", " typing.Any")
+        # remove all of the ` = ...  # type: ` enum type hints
+        stubs_src = re.sub(r"=\s*\.\.\.\s*#\s*type:\s*\S+", "= ...", stubs_src)
+
+        stubs.write_text(stubs_src)
+        if shutil.which("ruff"):
+            import subprocess
+
+            subprocess.run(
+                ["ruff", "check", str(stubs), "--fix-only", "--select", "E,F,W,I,TC"]
+            )
+            subprocess.run(["ruff", "format", str(stubs), "--line-length", "110"])
+
         (package / "py.typed").touch()
+
 
 class PyQt6Ads(PyQtProject):
     def __init__(self):

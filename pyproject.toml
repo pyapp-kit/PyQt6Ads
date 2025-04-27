@@ -1,13 +1,13 @@
 # Specify the build system.
 [build-system]
-requires = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3"]
+requires = ["sip >=6,<7", "PyQt-builder >=1.17,<2", "PyQt6==6.5.3", "ruff"]
 build-backend = "sipbuild.api"
 
 # Specify the PEP 566 metadata for the project.
 [project]
 name = "PyQt6Ads"
 # TODO: make dynamic in project.py
-version = "4.4.0.post1"
+version = "4.4.0.post2"
 requires-python = ">=3.9"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
@@ -131,7 +131,7 @@ test-command = [
 	"yum install -y epel-release",
 	"yum install -y libxkbcommon-x11 xcb-util-cursor xcb-util-wm xcb-util-keysyms xorg-x11-server-Xvfb",
 	"uv pip install pytest-xvfb",
-	"pytest {project}/tests -v"
+	"pytest {project}/tests -v",
 ]
 
 [tool.cibuildwheel.macos]
