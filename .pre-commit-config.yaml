@@ -6,12 +6,12 @@ ci:
 files: "examples|tests"
 repos:
   - repo: https://github.com/crate-ci/typos
-    rev: v1.31.1
+    rev: v1
     hooks:
       - id: typos
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.7
+    rev: v0.11.12
     hooks:
       - id: ruff
         args: [--fix, --unsafe-fixes]
