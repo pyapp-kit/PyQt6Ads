@@ -159,6 +159,7 @@ public:
     DisableTabTextEliding,
     ShowTabTextOnlyForActiveTab,
     DoubleClickUndocksWidget,
+    TabsAtBottom,
     DefaultDockAreaButtons,
     DefaultBaseConfig,
     DefaultOpaqueConfig,
@@ -259,6 +260,7 @@ public slots:
   void openPerspective(const QString& PerspectiveName);
   void setDockWidgetFocused(CDockWidget* DockWidget);
   void hideManagerAndFloatingWidgets();
+  void raise();
 
 signals:
   void perspectiveListChanged();
