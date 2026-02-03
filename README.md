@@ -67,3 +67,12 @@ class MainWindow(QMainWindow):
 
 - **For PySide6**: See <https://github.com/mborgerson/pyside6_qtads>
 - **For PyQt5**: See <https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System#pyqt5> (in the upstream repo)
+
+## Developers
+
+To build the wheel locally, use cibuildwheel:
+
+```sh
+export QT_VERSION=6.5.3
+uvx cibuildwheel
+```

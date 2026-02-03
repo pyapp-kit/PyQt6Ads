@@ -37,9 +37,9 @@ test = ["pytest>=8.3.4"]
 dev = [
 	{ "include-group" = "build" },
 	{ "include-group" = "test" },
-	"pre-commit>=4.1.0",
 	"ruff>=0.9.8",
 	"aqtinstall>=3.2.0",
+	"prek>=0.3.1",
 ]
 
 [tool.sip.builder]
@@ -148,6 +148,7 @@ line-length = 88
 target-version = "py39"
 src = ["src", "tests"]
 fix = true
+unsafe-fixes = true
 
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
