@@ -97,6 +97,8 @@ public:
   bool isAutoHide() const;
   CAutoHideDockContainer* autoHideDockContainer() const;
   SideBarLocation autoHideLocation() const;
+  void setPreferredAutoHideSideBarLocation(SideBarLocation Location);
+  SideBarLocation preferredAutoHideSideBarLocation() const;
   bool isFloating() const;
   bool isInFloatingContainer() const;
   bool isClosed() const;

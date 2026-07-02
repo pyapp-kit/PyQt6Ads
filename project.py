@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+import sys
 from pathlib import Path
 
 from pyqtbuild import PyQtBindings, PyQtProject, QmakeBuilder
@@ -72,7 +73,22 @@ class PyQt6Ads(PyQtProject):
             )
         print(f"USING QMAKE: {qmake_bin}")
         self.builder.qmake = qmake_bin
+        if sys.platform == "darwin":
+            self._strip_agl(Path(qmake_bin).parent.parent)
         return super().apply_user_defaults(tool)
+
+    def _strip_agl(self, qt_dir):
+        # Qt's .prl files and mkspecs link the legacy AGL framework (unused by
+        # Qt6), which was removed from the macOS SDK in Xcode 26.
+        configs = [
+            *qt_dir.glob("lib/Qt*.framework/Resources/*.prl"),
+            qt_dir / "mkspecs" / "common" / "mac.conf",
+            *(qt_dir / "mkspecs" / "modules").glob("qt_lib_*.pri"),
+        ]
+        for path in configs:
+            text = path.read_text()
+            if "-framework AGL" in text:
+                path.write_text(text.replace("-framework AGL", ""))
 
     def build_wheel(self, wheel_directory):
         # use lowercase name for wheel, for

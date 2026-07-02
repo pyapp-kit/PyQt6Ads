@@ -128,6 +128,7 @@ namespace ads
         ads::SideBarLocation toSideBarLocation(ads::DockWidgetArea Area);
         bool isHorizontalSideBarLocation(ads::SideBarLocation Location);
         bool isSideBarArea(ads::DockWidgetArea Area);
+        bool isWayland();
         
         SIP_PYOBJECT findParent(SIP_PYTYPE type, const QWidget *w) const /TypeHint="QObject"/;
         %MethodCode

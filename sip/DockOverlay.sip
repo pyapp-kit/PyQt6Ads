@@ -23,9 +23,12 @@ public:
     void setAllowedArea(ads::DockWidgetArea area, bool Enable);
 	ads::DockWidgetAreas allowedAreas() const;
 	ads::DockWidgetArea dropAreaUnderCursor() const;
+	ads::DockWidgetArea dropAreaUnderCursor(const QPoint& GlobalPos) const;
     int tabIndexUnderCursor() const;
     ads::DockWidgetArea visibleDropAreaUnderCursor() const;
+    ads::DockWidgetArea visibleDropAreaUnderCursor(const QPoint& GlobalPos) const;
 	ads::DockWidgetArea showOverlay(QWidget* target);
+	ads::DockWidgetArea showOverlay(QWidget* target, const QPoint& GlobalPos);
 	void hideOverlay();
 	void enableDropPreview(bool Enable);
     bool dropPreviewEnabled() const;
@@ -61,6 +64,7 @@ protected:
     void setIconArrowColor(const QColor& Color);
     void setIconShadowColor(const QColor& Color);
     virtual void showEvent(QShowEvent* e);
+    virtual bool event(QEvent* e);
     void setAreaWidgets(const QHash<ads::DockWidgetArea, QWidget*>& widgets);
 
 public:
@@ -69,6 +73,7 @@ public:
 	void setIconColor(ads::CDockOverlayCross::eIconColor ColorIndex, const QColor& Color);
 	QColor iconColor(ads::CDockOverlayCross::eIconColor ColorIndex) const;
 	ads::DockWidgetArea cursorLocation() const;
+	ads::DockWidgetArea cursorLocation(const QPoint& GlobalPos) const;
 	void setupOverlayCross(ads::CDockOverlay::eMode Mode);
 	void updateOverlayIcons();
 	void reset();

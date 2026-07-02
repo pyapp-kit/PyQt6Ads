@@ -14,7 +14,8 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent *ev);
 	virtual void mouseMoveEvent(QMouseEvent *ev);
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
-    
+    virtual QSize sizeHint() const;
+
     void setMaximizeIcon(const QIcon& Icon);
     QIcon maximizeIcon() const;
     void setNormalIcon(const QIcon& Icon);
