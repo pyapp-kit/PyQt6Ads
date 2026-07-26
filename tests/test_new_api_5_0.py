@@ -23,7 +23,9 @@ def test_color_scheme_mode() -> None:
 def test_new_config_flags() -> None:
     assert ads.CDockManager.eConfigFlag.UseNativeWindows.value == 0x40000000
     # 0x80000000 overflows a signed 32-bit int in the C++ enum
-    assert ads.CDockManager.eConfigFlag.DisableStylesheet.value & 0xFFFFFFFF == 0x80000000
+    assert (
+        ads.CDockManager.eConfigFlag.DisableStylesheet.value & 0xFFFFFFFF == 0x80000000
+    )
 
 
 def test_preferred_auto_hide_side_bar_location() -> None:
