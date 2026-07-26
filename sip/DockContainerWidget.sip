@@ -44,6 +44,12 @@ class CDockContainerWidget : QFrame
 
 protected:
 	virtual bool event(QEvent *e);
+	virtual void dragEnterEvent(QDragEnterEvent* e);
+	virtual void dragMoveEvent(QDragMoveEvent* e);
+	virtual void dragLeaveEvent(QDragLeaveEvent* e);
+	virtual void dropEvent(QDropEvent* e);
+	static CFloatingDockContainer* floatingWidgetFromDropEvent(QDropEvent* e, CDockManager* DockManager);
+	static void showDropOverlays(CDockManager* DockManager, CDockContainerWidget* TopContainer, const QPoint& GlobalPos, bool ContentPinnable);
 	CDockSplitter* rootSplitter() const;
 	CAutoHideDockContainer* createAndSetupAutoHideContainer(SideBarLocation area, CDockWidget* DockWidget /Transfer/, int TabIndex = -1);
 	void createRootSplitter();

@@ -19,6 +19,7 @@ protected:
   void hideAreaWithNoVisibleContent();
   void updateTitleBarVisibility();
   void internalSetCurrentDockWidget(CDockWidget* DockWidget /Transfer/);
+  void updateWindowTitle();
   void markTitleBarMenuOutdated();
   void updateTitleBarButtonVisibility(bool IsTopLevel) const;
 

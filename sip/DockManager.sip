@@ -121,12 +121,20 @@ protected:
   void notifyFloatingWidgetDrop(CFloatingDockContainer* FloatingWidget);
 
   virtual void showEvent(QShowEvent *event);
+  virtual void changeEvent(QEvent *event);
 
 public:
   enum eViewMenuInsertionOrder
   {
     MenuSortedByInsertion,
     MenuAlphabeticallySorted
+  };
+
+  enum class ColorSchemeMode
+  {
+    Light,
+    Dark,
+    FollowPalette
   };
 
   enum eConfigFlag
@@ -160,6 +168,8 @@ public:
     ShowTabTextOnlyForActiveTab,
     DoubleClickUndocksWidget,
     TabsAtBottom,
+    UseNativeWindows,
+    DisableStylesheet,
     DefaultDockAreaButtons,
     DefaultBaseConfig,
     DefaultOpaqueConfig,
@@ -211,6 +221,8 @@ public:
   static void setConfigParam(eConfigParam Param, QVariant Value);
   static QVariant configParam(eConfigParam Param, QVariant Default);
   static CIconProvider& iconProvider();
+  static bool isApplicationPaletteDark();
+  bool isDesiredStylesheetDark();
   CDockAreaWidget* addDockWidget(DockWidgetArea area, CDockWidget* Dockwidget /Transfer/, CDockAreaWidget* DockAreaWidget /Transfer/ = nullptr, int Index = -1);
   CDockAreaWidget* addDockWidgetToContainer(DockWidgetArea area, CDockWidget* Dockwidget /Transfer/, CDockContainerWidget* DockContainerWidget /Transfer/ = nullptr);
   CAutoHideDockContainer* addAutoHideDockWidget(SideBarLocation Location, CDockWidget* Dockwidget /Transfer/);
@@ -240,6 +252,7 @@ public:
   const QString& Group = QString(), const QIcon& GroupIcon = QIcon());
   QMenu* viewMenu() const;
   void setViewMenuInsertionOrder(CDockManager::eViewMenuInsertionOrder Order);
+  void setColorSchemeMode(CDockManager::ColorSchemeMode Mode);
   bool isRestoringState() const;
   bool isLeavingMinimizedState() const;
   static int startDragDistance();

@@ -74,6 +74,10 @@ public:
 	CDockWidget* topLevelDockWidget() const;
 	QList<ads::CDockWidget*> dockWidgets() const;
 	void finishDropOperation();
+	bool isDraggingActive() const;
+	static Qt::DropAction startPlatformDrag(CFloatingDockContainer* FloatingWidget, const QPoint& GlobalPressPos, QWidget* DragSource, const QPoint* DragOffset = nullptr);
+	static bool waylandMoveOrLeaveInWindowPreview(CFloatingDragPreview* Preview, QWidget* SourceWindow, const QPoint& GlobalPos);
+	static Qt::DropAction startPlatformDragForFloatingWidget(IFloatingWidget* FloatingWidget, const QPoint& GrabOffset, const QSize& Size, const QPoint& GlobalGrabPos, QWidget* DragSource);
 	
 %If (Linux)
 	void onMaximizeRequest();
