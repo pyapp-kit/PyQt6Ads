@@ -33,6 +33,7 @@ public:
 	SideBarLocation sideBarLocation() const;
 	virtual QSize minimumSizeHint() const;
 	virtual QSize sizeHint() const;
+	virtual void wheelEvent(QWheelEvent* e);
 	int spacing() const;
 	void setSpacing(int Spacing);
 	CDockContainerWidget* dockContainer() const;

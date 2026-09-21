@@ -1,4 +1,5 @@
 %Module(name=PyQt6Ads._ads, call_super_init=True, keyword_arguments="Optional", use_limited_api=True)
+%MinimumABIVersion "13"
 %HideNamespace(name=ads)
 
 %Import QtCore/QtCoremod.sip

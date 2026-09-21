@@ -107,3 +107,18 @@ class PyQt6Adsmod(PyQtBindings):
         )
         self.builder_settings.append("RESOURCES += " + resource_file)
         super().apply_user_defaults(tool)
+
+    def generate(self):
+        buildable = super().generate()
+        # ads_globals.h includes ads_version.h, which upstream generates with CMake.
+        # buildable.build_dir is already on the include path.
+        ads_dir = Path(self.project.root_dir, "Qt-Advanced-Docking-System")
+        cmake_src = (ads_dir / "CMakeLists.txt").read_text()
+        match = re.search(r"project\(\s*QtADS\s+VERSION\s+(\d+)\.(\d+)\.(\d+)", cmake_src)
+        if not match:
+            raise RuntimeError("Could not determine QtADS version from CMakeLists.txt")
+        header = (ads_dir / "cmake" / "modules" / "ads_version.h.in").read_text()
+        for part, value in zip(("MAJOR", "MINOR", "PATCH"), match.groups()):
+            header = header.replace(f"@QtADS_VERSION_{part}@", value)
+        Path(buildable.build_dir, "ads_version.h").write_text(header)
+        return buildable
