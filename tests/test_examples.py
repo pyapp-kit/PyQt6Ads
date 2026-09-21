@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QApplication
 
 HERE = Path(__file__)
 EXAMPLES = HERE.parent.parent / "examples"
-MAINS = EXAMPLES.rglob("main.py")
+MAINS = sorted(EXAMPLES.rglob("main.py"))
 
 app = QApplication.instance() or QApplication([])
 

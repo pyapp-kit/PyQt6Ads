@@ -8,7 +8,7 @@ build-backend = "sipbuild.api"
 name = "PyQt6Ads"
 # TODO: make dynamic in project.py
 version = "5.1.1"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 description = "Python bindings for Qt Advanced Docking System"
 license = { text = "LGPL v2.1" }
 readme = "README.md"
@@ -21,6 +21,12 @@ classifiers = [
 	"Operating System :: Microsoft :: Windows",
 	"Operating System :: POSIX :: Linux",
 	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: 3.15",
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	"Topic :: Software Development :: Widget Sets",
 	"Environment :: X11 Applications :: Qt",
@@ -109,11 +115,12 @@ sources = [
 
 [tool.cibuildwheel]
 build-verbosity = 1
+# builds a single abi3 wheel on cp310, which is then tested on cp314 and cp315
 build = [
-	"cp39-win_amd64",
-	"cp39-manylinux_x86_64",
-	"cp39-macosx_x86_64",
-	"cp39-macosx_arm64",
+	"cp3{10,14,15}-win_amd64",
+	"cp3{10,14,15}-manylinux_x86_64",
+	"cp3{10,14,15}-macosx_x86_64",
+	"cp3{10,14,15}-macosx_arm64",
 ]
 manylinux-x86_64-image = "manylinux_2_28"
 build-frontend = "build[uv]"
@@ -145,7 +152,7 @@ before-build = "uvx --from aqtinstall==3.2.0 aqt install-qt windows desktop %QT_
 # https://docs.astral.sh/ruff/
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py310"
 src = ["src", "tests"]
 fix = true
 unsafe-fixes = true

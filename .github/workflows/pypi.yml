@@ -40,7 +40,7 @@ jobs:
           toolset: 14.29
 
       - name: Build wheels via cibuildwheel
-        uses: pypa/cibuildwheel@v2.22
+        uses: pypa/cibuildwheel@v4.2
 
       - name: Upload wheels artifacts
         uses: actions/upload-artifact@v4
